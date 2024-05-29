@@ -1,0 +1,87 @@
+﻿using Microsoft.Extensions.Options;
+using Settlement.External.Common;
+
+using Settlement.External.Constants;
+using Settlement.External.Models;
+
+namespace Settlement.External.Services;
+
+public interface ValidationRequestService
+{
+    Result ValidResult(QueryRequest model);
+
+    Result MultiValidation(ListQueryRequest model);
+
+    bool ValidToken(string token);
+};
+
+public class ValidationRequestServiceImp : ValidationRequestService
+{
+    private readonly AppSetting appSetting;
+
+    public ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
+    {
+        this.appSetting = appSettingOptions.Value;
+    }
+
+    public Result ValidResult(QueryRequest model)
+    {
+        if (InvalidParameter(model))
+        {
+            return Result.ErrorParameter;
+        }
+
+        if (!ValidToken(model.SecurityToken))
+        {
+            return Result.ErrorSecurityToken;
+        }
+
+        return ValidScore(model.ResultInfo);
+    }
+
+    public Result MultiValidation(ListQueryRequest model)
+    {
+        foreach (var item in model.Matches)
+        {
+            var queryMatch = new QueryRequest
+            {
+                MatchId = item.MatchId,
+                SecurityToken = model.SecurityToken,
+                ResultInfo = item.ResultInfo
+            };
+
+            var result = ValidResult(queryMatch);
+
+            if (result.IsFail)
+            {
+                return result;
+            }
+        }
+
+        return new Result();
+    }
+
+    private Result ValidScore(IList<Score> resultInfo)
+    {
+        foreach (var item in resultInfo)
+        {
+            if (!Helper.IsNumber(item.HomeValue))
+            {
+                return Result.ErrorHomeValue;
+            }
+
+            if (!Helper.IsNumber(item.AwayValue))
+            {
+                return Result.ErrorAwayValue;
+            }
+        }
+
+        return new Result { ErrorMsg = ErrorMessage.Success };
+    }
+
+    private bool InvalidParameter(QueryRequest model) => model.MatchId < 1
+        || string.IsNullOrWhiteSpace(model.SecurityToken)
+        || model.ResultInfo == null;
+
+    public bool ValidToken(string token) => appSetting.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
+}

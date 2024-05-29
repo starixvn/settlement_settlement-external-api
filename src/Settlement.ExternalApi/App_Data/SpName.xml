@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+	<Function Name="AutoPayout">
+		<Setting Key="AutoPayout_GetResultByMatchId" SpName="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="AutoPayout_InsertResult" SpName="NAP_Set_AutoPayout_ResultDetailIns" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoPayout_ProviderResultDetailUpd" SpName="NAP_Set_AutoPayout_ProviderResultDetailUpd" DbName="DBPRO.bodb02.wsv_nap" />
+	</Function>
+	<Function Name="AutoInstant">
+		<Setting Key="NAP_Set_AutoInstant_ProviderResultDetailIns" SpName="NAP_Set_AutoInstant_ProviderResultDetailIns" DbName="DBPRO.bodb02.wsv_nap" />
+	</Function>
+</Functions>
