@@ -3,6 +3,7 @@ using Settlement.External.Common;
 
 using Settlement.External.Constants;
 using Settlement.External.Models;
+using StackExchange.Redis;
 
 namespace Settlement.External.Services;
 
@@ -13,6 +14,8 @@ public interface ValidationRequestService
     Result MultiValidation(ListQueryRequest model);
 
     bool ValidToken(string token);
+
+    Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model);
 };
 
 public class ValidationRequestServiceImp : ValidationRequestService
@@ -21,7 +24,7 @@ public class ValidationRequestServiceImp : ValidationRequestService
 
     public ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
     {
-        this.appSetting = appSettingOptions.Value;
+        appSetting = appSettingOptions.Value;
     }
 
     public Result ValidResult(QueryRequest model)
@@ -83,5 +86,23 @@ public class ValidationRequestServiceImp : ValidationRequestService
         || string.IsNullOrWhiteSpace(model.SecurityToken)
         || model.ResultInfo == null;
 
-    public bool ValidToken(string token) => appSetting.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
+    public bool ValidToken(string token) => !string.IsNullOrEmpty(token)
+        && appSetting.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
+
+    public Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model)
+    {
+        if (!ValidToken(model.SecurityToken))
+        {
+            return Result.ErrorSecurityToken;
+        }
+
+        short[] acceptTypes = [SettlementStatusType.HoldKey, SettlementStatusType.Refund, SettlementStatusType.MthHold];
+
+        if (!acceptTypes.Contains(model.Type))
+        {
+            return Result.ErrorParameter;
+        }
+
+        return new Result();
+    }
 }

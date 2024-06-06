@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Settlement.External.DTOs;
 using Settlement.External.Models;
 
@@ -15,7 +16,7 @@ public static class MatchesApi
         api.MapPost("singleMatch", CreateMatchResult);
         api.MapPost("multipleMatch", CreateMatchesResult);
         api.MapPost("goalRecord", CreateGoalRecord);
-
+        api.MapPost("updateSettlementStatus", UpdateMatchSettlementStatus);
         return app;
     }
 
@@ -72,5 +73,18 @@ public static class MatchesApi
         var match = await services.ResultDetailsService.GetMatch(matchId);
 
         return TypedResults.Ok(match);
+    }
+
+    private static async Task<Ok<Result>> UpdateMatchSettlementStatus(
+        [FromBody] SettlementStatusUpdRequest model,
+        MatchServices services)
+    {
+        var validResult = services.ValidationService.ValidSettlementStatusRequest(model);
+
+        if (validResult.IsFail) return TypedResults.Ok(validResult);
+
+        var result = await services.MatchSettlementService.UpdateMatchSettlementStatus(model);
+
+        return TypedResults.Ok(result);
     }
 }

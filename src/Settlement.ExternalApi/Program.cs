@@ -18,4 +18,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapMatchApi();
 
+app.MapGet("/ok", () => "OK");
+
 app.Run();
