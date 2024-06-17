@@ -54,11 +54,11 @@ public class MatchSettlementServiceImp : MatchSettlementService
 
         var db = connectionMultiplexer.GetDatabase(13);
 
-        var key = $"{KeyConfirmRefund}:{model.MatchId}:00";
+        var key = $"{KeyConfirmRefund}:{model.MatchId}:01,00";
 
         if (model.IsEnabled)
         {
-            db.StringSet(key, true, TimeSpan.FromMinutes(5));
+            db.StringSet(key, true, TimeSpan.FromMinutes(10));
         }
         else
         {
