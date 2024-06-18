@@ -1,13 +1,16 @@
 FROM hub.nexdev.net/base/dotnet/core/sdk:8.0-alpine AS builder
 
-COPY ./Settlement.ExternalApi/Settlement.ExternalApi.csproj ./Settlement.ExternalApi/Settlement.ExternalApi.csproj
-COPY ./Settlement.External ./Settlement.External
+WORKDIR /src
+COPY Settlement.ExternalApi.sln .
+COPY ./src/Settlement.External/Settlement.External.csproj ./Settlement.External/
+COPY ./src/Settlement.ExternalApi/Settlement.ExternalApi.csproj ./Settlement.ExternalApi/
 
-WORKDIR ./Settlement.ExternalApi
+
+WORKDIR /src/Settlement.ExternalApi
 RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
 RUN dotnet restore -v n
 
-COPY ./Settlement.ExternalApi .
+COPY . .
 
 RUN dotnet publish -r linux-x64 --self-contained false -c Release -o /app
 
