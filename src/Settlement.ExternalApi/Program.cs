@@ -18,6 +18,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapMatchApi();
 
-app.MapGet("/ok", () => "OK");
+app.Run(async context =>
+{
+    await context.Response.WriteAsync("OK");
+});
 
 app.Run();
