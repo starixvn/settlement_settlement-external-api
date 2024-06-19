@@ -4,6 +4,8 @@ using Settlement.ExternalApi.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHealthChecks();
+
 builder.Services.Configure<AppSetting>(builder.Configuration);
 
 builder.Services.AddInitialServices(builder.Configuration);
@@ -18,6 +20,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapMatchApi();
 
-app.MapGet("", () => "Hello World!");
+app.MapHealthChecks("/health");
 
 app.Run();
