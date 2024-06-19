@@ -1,18 +1,22 @@
 FROM hub.nexdev.net/base/dotnet/core/sdk:8.0-alpine AS builder
 
 WORKDIR /src
-COPY Settlement.ExternalApi.sln .
-COPY ./src/Settlement.External/Settlement.External.csproj ./Settlement.External/
-COPY ./src/Settlement.ExternalApi/Settlement.ExternalApi.csproj ./Settlement.ExternalApi/
+# COPY Settlement.ExternalApi.sln .
+COPY src/Settlement.External/*.csproj ./src/Settlement.External/
+COPY src/Settlement.ExternalApi/*.csproj ./src/Settlement.ExternalApi/
 
 
-WORKDIR /src/Settlement.ExternalApi
 RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
-RUN dotnet restore -v n
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    dotnet restore ./src/Settlement.ExternalApi/Settlement.ExternalApi.csproj
 
-COPY . .
+COPY src/Settlement.External/. ./src/Settlement.External/
+COPY src/Settlement.ExternalApi/. ./src/Settlement.ExternalApi/
 
-RUN dotnet publish -r linux-x64 --self-contained false -c Release -o /app
+WORKDIR /src/src/Settlement.ExternalApi
+
+RUN --mount=type=cache,target=/root/.nuget/packages \
+	dotnet publish -c release -o /app
 
 FROM hub.nexdev.net/base/dotnet/core/aspnet:8.0-alpine AS base
 
