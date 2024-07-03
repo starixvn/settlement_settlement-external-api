@@ -3,7 +3,6 @@ using Settlement.External.Common;
 
 using Settlement.External.Constants;
 using Settlement.External.Models;
-using StackExchange.Redis;
 
 namespace Settlement.External.Services;
 

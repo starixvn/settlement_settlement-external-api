@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Settlement.External.DTOs;
 using Settlement.External.Models;
 
@@ -26,7 +25,10 @@ public static class MatchesApi
     {
         var valid = services.ValidationService.ValidResult(model);
 
-        if (valid.IsFail) return TypedResults.Ok(valid);
+        if (valid.IsFail)
+        {
+            return TypedResults.Ok(valid);
+        }
 
         var result = await services.SoccerWayService.Insert(model);
 
@@ -39,7 +41,10 @@ public static class MatchesApi
     {
         var multiValid = services.ValidationService.MultiValidation(model);
 
-        if (multiValid.IsFail) return TypedResults.Ok(multiValid);
+        if (multiValid.IsFail)
+        {
+            return TypedResults.Ok(multiValid);
+        }
 
         var result = await services.ResultDetailsService.InsertMultiMatches(model);
 
@@ -52,7 +57,10 @@ public static class MatchesApi
     {
         var valid = services.ValidationService.ValidResult(model);
 
-        if (valid.IsFail) return TypedResults.Ok(valid);
+        if (valid.IsFail)
+        {
+            return TypedResults.Ok(valid);
+        }
 
         var result = await services.ResultDetailsService.Insert(model);
 
@@ -81,7 +89,10 @@ public static class MatchesApi
     {
         var validResult = services.ValidationService.ValidSettlementStatusRequest(model);
 
-        if (validResult.IsFail) return TypedResults.Ok(validResult);
+        if (validResult.IsFail)
+        {
+            return TypedResults.Ok(validResult);
+        }
 
         var result = await services.MatchSettlementService.UpdateMatchSettlementStatus(model);
 

@@ -37,14 +37,14 @@ public static class InitializeConfigServices
         services.AddScoped<MatchSettlementService, MatchSettlementServiceImp>();
 
         services.AddScoped<MatchServices>();
-
+        StartUmSetting(configuration);
+        StartLogSetting(configuration);
         return services;
     }
 
     private static void AddConfigRedisCache(this IServiceCollection service, IConfiguration configuration)
     {
         var redisConfig = configuration.GetSection("AuthSettings:RedisConfig").Value;
-        //var applicationName = configuration.GetSection("AuthSettings:ChannelPrefix").Value;
         service.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect($"{redisConfig}"));
         service.AddSingleton<ICache>(new RedisCache(new RedisCacheOptions
         {
