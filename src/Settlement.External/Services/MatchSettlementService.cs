@@ -43,7 +43,10 @@ public class MatchSettlementServiceImp(
 
     private void SetConfirmRefundKeyCache(SettlementStatusUpdRequest model, Result result)
     {
-        if (model.Type != SettlementStatusType.Refund || result.IsFail) { return; }
+        if (model.Type != SettlementStatusType.Refund || result.IsFail)
+        {
+            return;
+        }
 
         var db = connectionMultiplexer.GetDatabase(13);
 

@@ -86,7 +86,6 @@ public class MatchSettlementServiceTests
 
         // Assert
         connectionMultiplexer.DidNotReceive().GetDatabase(Arg.Any<int>());
-        connectionMultiplexer.GetDatabase(Arg.Any<int>()).DidNotReceive().StringSet(Arg.Any<string>(), Arg.Any<bool>(), Arg.Any<TimeSpan>());
     }
 
     [Fact]
