@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Fanex.Data.Repository;
 using Settlement.External.Common;
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
@@ -12,21 +11,14 @@ public interface SoccerWayResultService
     Task<Result> Insert(QueryRequest model);
 }
 
-public class SoccerWayResultServiceImp : SoccerWayResultService
+public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWayResultService
 {
     private const int Timer = 45;
     private const string HomeGoal = "H";
     private const string AwayGoal = "A";
     private const string Semicolon = ";";
 
-    private readonly IDynamicRepository repository;
-
-    public int MatchId { get; set; }
-
-    public SoccerWayResultServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
+    private int MatchId { get; set; }
 
     public async Task<Result> Insert(QueryRequest model)
     {
@@ -70,14 +62,11 @@ public class SoccerWayResultServiceImp : SoccerWayResultService
 
     private async Task<Result> ProcessForAutoInstant(List<Score> listScore)
     {
-        var autoInstantScores = listScore.Select(score =>
+        var autoInstantScores = listScore.Select(score => new AutoInstantScore
         {
-            return new AutoInstantScore
-            {
-                Type = score.GoalTime <= 45 ? (short)GoalType.FirstHalf : (short)GoalType.SecondHalf,
-                HomeValue = string.IsNullOrEmpty(score.HomeValue) ? "0" : score.HomeValue,
-                AwayValue = string.IsNullOrEmpty(score.AwayValue) ? "0" : score.AwayValue
-            };
+            Type = score.GoalTime <= 45 ? (short)GoalType.FirstHalf : (short)GoalType.SecondHalf,
+            HomeValue = string.IsNullOrEmpty(score.HomeValue) ? "0" : score.HomeValue,
+            AwayValue = string.IsNullOrEmpty(score.AwayValue) ? "0" : score.AwayValue
         });
 
         var autoInstantMatch = new AutoInstantMatch
@@ -98,7 +87,7 @@ public class SoccerWayResultServiceImp : SoccerWayResultService
         return result;
     }
 
-    public async Task<Result> InsertSoccerWay(AddSoccerWayResultCriteria criteria)
+    private async Task<Result> InsertSoccerWay(AddSoccerWayResultCriteria criteria)
     {
         await repository.ExecuteAsync(criteria);
 

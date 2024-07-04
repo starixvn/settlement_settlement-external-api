@@ -2,12 +2,7 @@
 
 public class Match
 {
-    public Match()
-    {
-        ResultInfo = new List<Score>();
-    }
-
     public int MatchId { get; set; }
 
-    public List<Score> ResultInfo { get; set; }
+    public List<Score> ResultInfo { get; set; } = new();
 }

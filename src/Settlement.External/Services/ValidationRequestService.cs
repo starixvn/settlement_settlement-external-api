@@ -17,14 +17,9 @@ public interface ValidationRequestService
     Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model);
 };
 
-public class ValidationRequestServiceImp : ValidationRequestService
+public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions) : ValidationRequestService
 {
-    private readonly AppSetting appSetting;
-
-    public ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
-    {
-        appSetting = appSettingOptions.Value;
-    }
+    private readonly AppSetting appSetting = appSettingOptions.Value;
 
     public Result ValidResult(QueryRequest model)
     {

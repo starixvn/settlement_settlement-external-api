@@ -5,11 +5,11 @@ using Settlement.External.Services;
 
 namespace Settlement.External.UnitTests.Services;
 
-public class ValidationRequestServiceUnitTests
+public class ValidationRequestServiceTests
 {
     private readonly ValidationRequestService services;
 
-    public ValidationRequestServiceUnitTests()
+    public ValidationRequestServiceTests()
     {
         var appSetting = new AppSetting { SecurityToken = "ABC" };
         var options = Options.Create(appSetting);
@@ -44,7 +44,7 @@ public class ValidationRequestServiceUnitTests
         {
             MatchId = 1,
             SecurityToken = "XYZ",
-            ResultInfo = new List<Score>()
+            ResultInfo = []
         };
 
         // Act
@@ -63,14 +63,14 @@ public class ValidationRequestServiceUnitTests
         {
             MatchId = 1,
             SecurityToken = "ABC",
-            ResultInfo = new List<Score>
-            {
-                new Score
+            ResultInfo =
+            [
+                new Score()
                 {
                     HomeValue = "",
                     AwayValue = "2",
                 }
-            }
+            ]
         };
 
         // Act
@@ -89,14 +89,14 @@ public class ValidationRequestServiceUnitTests
         {
             MatchId = 1,
             SecurityToken = "ABC",
-            ResultInfo = new List<Score>
-            {
-                new Score
+            ResultInfo =
+            [
+                new()
                 {
                     HomeValue = "1",
                     AwayValue = "",
                 }
-            }
+            ]
         };
 
         // Act
@@ -115,14 +115,14 @@ public class ValidationRequestServiceUnitTests
         {
             MatchId = 1,
             SecurityToken = "ABC",
-            ResultInfo = new List<Score>
-            {
-                new Score
+            ResultInfo =
+            [
+                new()
                 {
                     HomeValue = "1",
                     AwayValue = "0",
                 }
-            }
+            ]
         };
 
         // Act

@@ -1,6 +1,4 @@
-﻿using Fanex.Data.Repository;
-
-namespace Settlement.External.Criteria;
+﻿namespace Settlement.External.Criteria;
 
 public class GetResultByMatchIdCriteria : CriteriaBase
 {

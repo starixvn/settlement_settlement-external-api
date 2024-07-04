@@ -1,5 +1,4 @@
-﻿using Fanex.Data.Repository;
-using Settlement.External.Constants;
+﻿using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using Settlement.External.DTOs;
 using Settlement.External.Models;
@@ -18,15 +17,8 @@ public interface ProviderResultService
     Task<Result> InsertMultiMatches(ListQueryRequest model);
 }
 
-public class ProviderResultServiceImp : ProviderResultService
+public class ProviderResultServiceImp(IDynamicRepository repository) : ProviderResultService
 {
-    private readonly IDynamicRepository repository;
-
-    public ProviderResultServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public async Task<List<ScoreDto>> GetResultByMatchId(int matchId)
     {
         var criteria = new GetResultByMatchIdCriteria

@@ -1,5 +1,4 @@
-﻿using Fanex.Data.Repository;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using Settlement.External.Models;
@@ -12,19 +11,13 @@ public interface MatchSettlementService
     Task<Result> UpdateMatchSettlementStatus(SettlementStatusUpdRequest model);
 }
 
-public class MatchSettlementServiceImp : MatchSettlementService
+public class MatchSettlementServiceImp(
+    IDynamicRepository repository,
+    IHttpContextAccessor accessor,
+    IConnectionMultiplexer connectionMultiplexer)
+    : MatchSettlementService
 {
-    private readonly IDynamicRepository repository;
-    private readonly IHttpContextAccessor accessor;
-    private readonly IConnectionMultiplexer connectionMultiplexer;
     private const string KeyConfirmRefund = "SettlementConfirmRefund";
-
-    public MatchSettlementServiceImp(IDynamicRepository repository, IHttpContextAccessor accessor, IConnectionMultiplexer connectionMultiplexer)
-    {
-        this.repository = repository;
-        this.accessor = accessor;
-        this.connectionMultiplexer = connectionMultiplexer;
-    }
 
     public async Task<Result> UpdateMatchSettlementStatus(SettlementStatusUpdRequest model)
     {

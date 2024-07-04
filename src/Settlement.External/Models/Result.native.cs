@@ -27,11 +27,11 @@ public class Result
 
     public bool IsFail => this.ErrorCode > 0;
 
-    public static Result ErrorSecurityToken => new Result { ErrorCode = 1, ErrorMsg = ErrorMessage.IncorrectSecurityToken };
+    public static Result ErrorSecurityToken => new() { ErrorCode = 1, ErrorMsg = ErrorMessage.IncorrectSecurityToken };
 
-    public static Result ErrorHomeValue => new Result { ErrorCode = ErrorCodes.InvalidHomeValue, ErrorMsg = ErrorMessage.InvalidHomeValue };
+    public static Result ErrorHomeValue => new() { ErrorCode = ErrorCodes.InvalidHomeValue, ErrorMsg = ErrorMessage.InvalidHomeValue };
 
-    public static Result ErrorAwayValue => new Result { ErrorCode = ErrorCodes.InvalidAwayValue, ErrorMsg = ErrorMessage.InvalidAwayValue };
+    public static Result ErrorAwayValue => new() { ErrorCode = ErrorCodes.InvalidAwayValue, ErrorMsg = ErrorMessage.InvalidAwayValue };
 
-    public static Result ErrorParameter => new Result { ErrorCode = ErrorCodes.InvalidParameter, ErrorMsg = ErrorMessage.InvalidParameter };
+    public static Result ErrorParameter => new() { ErrorCode = ErrorCodes.InvalidParameter, ErrorMsg = ErrorMessage.InvalidParameter };
 };

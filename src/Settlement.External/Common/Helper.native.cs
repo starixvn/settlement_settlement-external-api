@@ -9,12 +9,7 @@ public static class Helper
 {
     public static bool IsNumber(object value)
     {
-        if (value == null)
-        {
-            return false;
-        }
-
-        return double.TryParse(Convert.ToString(value, CultureInfo.InvariantCulture), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out double _);
+        return value != null && double.TryParse(Convert.ToString(value, CultureInfo.InvariantCulture), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out double _);
     }
 
     public static string GeneralXmlString<T>(T t) where T : class
@@ -26,13 +21,9 @@ public static class Helper
         {
             OmitXmlDeclaration = true
         };
-        using (var stringWriter = new StringWriter())
-        {
-            using (var writer = XmlWriter.Create(stringWriter, settings))
-            {
-                serializer.Serialize(writer, t, ns);
-                return stringWriter.ToString();
-            }
-        }
+        using var stringWriter = new StringWriter();
+        using var writer = XmlWriter.Create(stringWriter, settings);
+        serializer.Serialize(writer, t, ns);
+        return stringWriter.ToString();
     }
 }

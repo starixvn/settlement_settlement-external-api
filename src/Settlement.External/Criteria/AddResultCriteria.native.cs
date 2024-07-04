@@ -1,5 +1,4 @@
-﻿using Fanex.Data.Repository;
-using Settlement.External.Constants;
+﻿using Settlement.External.Constants;
 
 namespace Settlement.External.Criteria;
 
