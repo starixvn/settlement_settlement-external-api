@@ -15,8 +15,15 @@ public static class MatchesApi
         api.MapPost("singleMatch", CreateMatchResult);
         api.MapPost("multipleMatch", CreateMatchesResult);
         api.MapPost("goalRecord", CreateGoalRecord);
-        api.MapPost("updateSettlementStatus", UpdateMatchSettlementStatus);
+        api.MapPost("update-settlement-status", UpdateMatchSettlementStatus);
+        api.MapPost("api-testing", Testing);
         return app;
+    }
+
+    private static Task<Ok<Result>> Testing()
+    {
+        var result = new Result();
+        return Task.FromResult(TypedResults.Ok(result));
     }
 
     private static async Task<Ok<Result>> CreateGoalRecord(
