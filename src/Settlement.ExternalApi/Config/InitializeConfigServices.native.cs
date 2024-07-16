@@ -15,6 +15,7 @@ using Settlement.External.Services;
 using Settlement.ExternalApi.Apis;
 using SharpRaven;
 using StackExchange.Redis;
+using ILogger = Fanex.Logging.ILogger;
 
 namespace Settlement.ExternalApi.Config;
 
@@ -29,6 +30,7 @@ public static class InitializeConfigServices
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
+        services.AddTransient<ILogger, Logger>();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
         services.AddScoped<ProviderResultService, ProviderResultServiceImp>();
@@ -49,7 +51,6 @@ public static class InitializeConfigServices
         service.AddSingleton<ICache>(new RedisCache(new RedisCacheOptions
         {
             ConnectionString = redisConfig,
-            //ApplicationName = applicationName,
         }));
         service.AddSingleton<ICacheService>(new CacheService());
     }
