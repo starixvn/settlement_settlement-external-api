@@ -19,8 +19,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapMatchApi();
-
 app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
@@ -31,8 +29,6 @@ app.UseRouting();
 
 app.UseCors("AllowOrigin");
 
-app.MapControllerRoute(
-    "default",
-    "{controller=Home}/{action=Index}/{id?}");
+app.MapMatchApi();
 
 app.Run();

@@ -16,25 +16,18 @@ public static class MatchesApi
         api.MapPost("multipleMatch", CreateMatchesResult);
         api.MapPost("goalRecord", CreateGoalRecord);
         api.MapPost("update-settlement-status", UpdateMatchSettlementStatus);
-        api.MapPost("api-testing", Testing);
         return app;
     }
 
-    private static Task<Ok<Result>> Testing()
-    {
-        var result = new Result();
-        return Task.FromResult(TypedResults.Ok(result));
-    }
-
-    private static async Task<Ok<Result>> CreateGoalRecord(
-        [FromBody] QueryRequest model,
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateGoalRecord(
+        [FromBody] GoalRecordRequest model,
         MatchServices services)
     {
-        var valid = services.ValidationService.ValidResult(model);
+        var valid = services.ValidationService.ValidGoalRecordRequest(model);
 
         if (valid.IsFail)
         {
-            return TypedResults.Ok(valid);
+            return TypedResults.BadRequest(valid);
         }
 
         var result = await services.SoccerWayService.Insert(model);
@@ -42,7 +35,7 @@ public static class MatchesApi
         return TypedResults.Ok(result);
     }
 
-    private static async Task<Ok<Result>> CreateMatchesResult(
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateMatchesResult(
         [FromBody] ListQueryRequest model,
         MatchServices services)
     {
@@ -50,7 +43,7 @@ public static class MatchesApi
 
         if (multiValid.IsFail)
         {
-            return TypedResults.Ok(multiValid);
+            return TypedResults.BadRequest(multiValid);
         }
 
         var result = await services.ResultDetailsService.InsertMultiMatches(model);
@@ -58,7 +51,7 @@ public static class MatchesApi
         return TypedResults.Ok(result);
     }
 
-    private static async Task<Ok<Result>> CreateMatchResult(
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateMatchResult(
         [FromBody] QueryRequest model,
         MatchServices services)
     {
@@ -66,7 +59,7 @@ public static class MatchesApi
 
         if (valid.IsFail)
         {
-            return TypedResults.Ok(valid);
+            return TypedResults.BadRequest(valid);
         }
 
         var result = await services.ResultDetailsService.Insert(model);
@@ -74,7 +67,7 @@ public static class MatchesApi
         return TypedResults.Ok(result);
     }
 
-    private static async Task<Results<Ok<MatchDto>, Ok<Result>>> GetMatchResult(
+    private static async Task<Results<Ok<MatchDto>, BadRequest<Result>>> GetMatchResult(
         int matchId,
         string securityToken,
         MatchServices services
@@ -82,7 +75,7 @@ public static class MatchesApi
     {
         if (!services.ValidationService.ValidToken(securityToken))
         {
-            return TypedResults.Ok(Result.ErrorSecurityToken);
+            return TypedResults.BadRequest(Result.ErrorSecurityToken);
         }
 
         var match = await services.ResultDetailsService.GetMatch(matchId);
@@ -90,7 +83,7 @@ public static class MatchesApi
         return TypedResults.Ok(match);
     }
 
-    private static async Task<Ok<Result>> UpdateMatchSettlementStatus(
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> UpdateMatchSettlementStatus(
         [FromBody] SettlementStatusUpdRequest model,
         MatchServices services)
     {
@@ -98,7 +91,7 @@ public static class MatchesApi
 
         if (validResult.IsFail)
         {
-            return TypedResults.Ok(validResult);
+            return TypedResults.BadRequest(validResult);
         }
 
         var result = await services.MatchSettlementService.UpdateMatchSettlementStatus(model);

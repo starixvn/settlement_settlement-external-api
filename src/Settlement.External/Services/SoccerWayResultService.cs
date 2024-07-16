@@ -8,7 +8,7 @@ namespace Settlement.External.Services;
 
 public interface SoccerWayResultService
 {
-    Task<Result> Insert(QueryRequest model);
+    Task<Result> Insert(GoalRecordRequest model);
 }
 
 public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWayResultService
@@ -20,7 +20,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
 
     private int MatchId { get; set; }
 
-    public async Task<Result> Insert(QueryRequest model)
+    public async Task<Result> Insert(GoalRecordRequest model)
     {
         MatchId = model.MatchId;
 
@@ -46,7 +46,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
             : new Result();
     }
 
-    private async Task<Result> ProcessForAutoPayout(List<Score> listScore)
+    private async Task<Result> ProcessForAutoPayout(List<SoccerWayScore> listScore)
     {
         var fullTimeScore = listScore
             .GroupBy(s => new { s.GoalTime, s.TotalScore })
@@ -60,7 +60,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
             : await EmptyScoreInfo();
     }
 
-    private async Task<Result> ProcessForAutoInstant(List<Score> listScore)
+    private async Task<Result> ProcessForAutoInstant(List<SoccerWayScore> listScore)
     {
         var autoInstantScores = listScore.Select(score => new AutoInstantScore
         {
@@ -109,7 +109,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         };
     }
 
-    private async Task<Result> AddScoreAndGoal(List<Score> halfTimeScore, List<Score> fullTimeScore)
+    private async Task<Result> AddScoreAndGoal(List<SoccerWayScore> halfTimeScore, List<SoccerWayScore> fullTimeScore)
     {
         var error = string.Empty;
         var halfTimeScoreResult = await AddScore(halfTimeScore.LastOrDefault(), GoalType.HalfTime);
@@ -180,7 +180,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         return result;
     }
 
-    private async Task<Result> AddScore(Score score, GoalType typeId)
+    private async Task<Result> AddScore(SoccerWayScore score, GoalType typeId)
     {
         var criteria = new AddSoccerWayResultCriteria
         {
@@ -195,7 +195,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         return result;
     }
 
-    private async Task<Result> AddGoal(List<Score> listScore, GoalType typeId)
+    private async Task<Result> AddGoal(List<SoccerWayScore> listScore, GoalType typeId)
     {
         var goal = typeId == GoalType.FullTimeFirstGoalLastGoal ? FullTimeGoalRecord(listScore) : GoalRecord(listScore);
         var criteria = new AddSoccerWayResultCriteria
@@ -212,7 +212,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         return result;
     }
 
-    private static string GoalRecord(List<Score> listScore)
+    private static string GoalRecord(List<SoccerWayScore> listScore)
     {
         var goal = new StringBuilder();
 
@@ -224,7 +224,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         return goal.ToString();
     }
 
-    private static string FullTimeGoalRecord(List<Score> listScore)
+    private static string FullTimeGoalRecord(List<SoccerWayScore> listScore)
     {
         var halfTimeScore = listScore.Where(s => s.GoalTime <= Timer).ToList();
         var fullTimeScore = listScore.Where(s => s.GoalTime > Timer).ToList();

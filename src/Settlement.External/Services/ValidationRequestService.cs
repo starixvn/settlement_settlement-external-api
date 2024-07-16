@@ -15,6 +15,8 @@ public interface ValidationRequestService
     bool ValidToken(string token);
 
     Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model);
+
+    Result ValidGoalRecordRequest(GoalRecordRequest model);
 };
 
 public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions) : ValidationRequestService
@@ -98,5 +100,22 @@ public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
         }
 
         return new Result();
+    }
+
+    public Result ValidGoalRecordRequest(GoalRecordRequest model)
+    {
+        var queryRequest = new QueryRequest
+        {
+            MatchId = model.MatchId,
+            SecurityToken = model.SecurityToken,
+            ResultInfo = model.ResultInfo.Select(score => new Score
+            {
+                HomeValue = score.HomeValue,
+                AwayValue = score.AwayValue,
+                SourceId = score.SourceId,
+            }).ToList()
+        };
+
+        return ValidResult(queryRequest);
     }
 }

@@ -21,7 +21,7 @@ public class SoccerWayResultServiceImpTests
     public async Task Insert_ResultInfoIsEmpty_ShouldReturnResult()
     {
         // Act
-        var result = await service.Insert(new QueryRequest { MatchId = 1, ResultInfo = [] });
+        var result = await service.Insert(new GoalRecordRequest { MatchId = 1, ResultInfo = [] });
 
         // Assert
         Assert.False(result.IsFail);
@@ -32,14 +32,14 @@ public class SoccerWayResultServiceImpTests
     public async Task ProcessForAutoInstant_ShouldReturnResult_WhenScoreIsProcessed()
     {
         // Arrange
-        var listScore = new List<Score>
+        var listScore = new List<SoccerWayScore>
         {
             new() { GoalTime = 30, HomeValue = "1", AwayValue = "0" },
             new() { GoalTime = 60, HomeValue = "2", AwayValue = "1" }
         };
 
         // Act
-        var result = await service.Insert(new QueryRequest { MatchId = 1, ResultInfo = listScore });
+        var result = await service.Insert(new GoalRecordRequest { MatchId = 1, ResultInfo = listScore });
 
         // Assert
         Assert.False(result.IsFail);
@@ -49,17 +49,17 @@ public class SoccerWayResultServiceImpTests
     public async Task AddScoreAndGoal_ShouldReturnResult_WhenScoresAreAdded()
     {
         // Arrange
-        var halfTimeScore = new List<Score>
+        var halfTimeScore = new List<SoccerWayScore>
         {
             new() { GoalTime = 30, HomeValue = "1", AwayValue = "0" }
         };
-        var fullTimeScore = new List<Score>
+        var fullTimeScore = new List<SoccerWayScore>
         {
             new() { GoalTime = 90, HomeValue = "2", AwayValue = "1" }
         };
 
         // Act
-        var result = await service.Insert(new QueryRequest
+        var result = await service.Insert(new GoalRecordRequest
         {
             MatchId = 1,
             ResultInfo = halfTimeScore.Concat(fullTimeScore).ToList()

@@ -25,7 +25,7 @@ public class Result
         set => errorMsg = value;
     }
 
-    public bool IsFail => this.ErrorCode > 0;
+    public bool IsFail => ErrorCode > 0;
 
     public static Result ErrorSecurityToken => new() { ErrorCode = 1, ErrorMsg = ErrorMessage.IncorrectSecurityToken };
 
