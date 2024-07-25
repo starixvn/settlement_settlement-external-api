@@ -6,7 +6,7 @@ namespace Settlement.External.Models;
 [Serializable]
 public class Result
 {
-    private string errorMsg = "Success";
+    private string _errorMsg = "Success";
 
     public int ErrorCode { get; set; }
 
@@ -16,13 +16,13 @@ public class Result
         {
             if (ErrorCode == 0)
             {
-                errorMsg = "Success";
+                _errorMsg = "Success";
             }
 
-            return errorMsg;
+            return _errorMsg;
         }
 
-        set => errorMsg = value;
+        set => _errorMsg = value;
     }
 
     public bool IsFail => ErrorCode > 0;

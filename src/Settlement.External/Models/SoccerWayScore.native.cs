@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Settlement.External.Constants;
-
-namespace Settlement.External.Models;
+﻿namespace Settlement.External.Models;
 
 public class SoccerWayScore
 {

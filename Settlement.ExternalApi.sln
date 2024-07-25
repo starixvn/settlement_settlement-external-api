@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		.gitlab-ci.yml = .gitlab-ci.yml
 		Dockerfile = Dockerfile
+		Settlement.ExternalApi.sln.DotSettings = Settlement.ExternalApi.sln.DotSettings
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D1E32F1C-C064-4F1F-B5B8-B61BDCCAECD5}"
@@ -19,9 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Settlement.ExternalApi", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Settlement.External", "src\Settlement.External\Settlement.External.csproj", "{DB30BAC6-76CA-4BF9-A710-D6EA6AB26784}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settlement.External.UnitTests", "tests\Settlement.External.UnitTests\Settlement.External.UnitTests.csproj", "{71BB95A3-D666-4A9C-9616-D61ED1855373}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Settlement.External.UnitTests", "tests\Settlement.External.UnitTests\Settlement.External.UnitTests.csproj", "{71BB95A3-D666-4A9C-9616-D61ED1855373}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Settlement.ExternalApi.UnitTests", "tests\Settlement.ExternalApi.UnitTests\Settlement.ExternalApi.UnitTests.csproj", "{C19F1195-E99C-4688-B121-6E0BB0DC6065}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Settlement.ExternalApi.UnitTests", "tests\Settlement.ExternalApi.UnitTests\Settlement.ExternalApi.UnitTests.csproj", "{C19F1195-E99C-4688-B121-6E0BB0DC6065}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

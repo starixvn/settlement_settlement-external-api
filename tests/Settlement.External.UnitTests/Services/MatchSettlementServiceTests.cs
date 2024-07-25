@@ -12,14 +12,13 @@ namespace Settlement.External.UnitTests.Services;
 public class MatchSettlementServiceTests
 {
     private readonly IDynamicRepository repository;
-    private readonly IHttpContextAccessor accessor;
     private readonly IConnectionMultiplexer connectionMultiplexer;
     private readonly MatchSettlementService service;
 
     public MatchSettlementServiceTests()
     {
         repository = Substitute.For<IDynamicRepository>();
-        accessor = Substitute.For<IHttpContextAccessor>();
+        var accessor = Substitute.For<IHttpContextAccessor>();
         var context = new DefaultHttpContext
         {
             Connection =

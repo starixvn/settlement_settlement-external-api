@@ -21,8 +21,6 @@ public interface ValidationRequestService
 
 public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions) : ValidationRequestService
 {
-    private readonly AppSetting appSetting = appSettingOptions.Value;
-
     public Result ValidResult(QueryRequest model)
     {
         if (InvalidParameter(model))
@@ -83,7 +81,7 @@ public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
         || model.ResultInfo == null;
 
     public bool ValidToken(string token) => !string.IsNullOrEmpty(token)
-        && appSetting.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
+        && appSettingOptions.Value.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
 
     public Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model)
     {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Settlement.External.DTOs;
 using Settlement.External.Models;
+using Settlement.ExternalApi.EndpointFilters;
 
 namespace Settlement.ExternalApi.Apis;
 
@@ -11,11 +12,12 @@ public static class MatchesApi
     {
         var api = app.MapGroup("api/Match");
 
-        api.MapGet("getMatchResult", GetMatchResult);
-        api.MapPost("singleMatch", CreateMatchResult);
-        api.MapPost("multipleMatch", CreateMatchesResult);
-        api.MapPost("goalRecord", CreateGoalRecord);
-        api.MapPost("update-settlement-status", UpdateMatchSettlementStatus);
+        api.MapPost("singleMatch", CreateMatchResult).AddEndpointFilter<LogRequestFilter>();
+        api.MapPost("goalRecord", CreateGoalRecord).AddEndpointFilter<LogRequestFilter>();
+        api.MapPost("update-settlement-status", UpdateMatchSettlementStatus).AddEndpointFilter<LogRequestFilter>();
+        api.MapPost("multipleMatch", CreateMatchesResult).AddEndpointFilter<LogRequestFilter>();
+        api.MapGet("getMatchResult", GetMatchResult).AddEndpointFilter<LogRequestFilter>();
+
         return app;
     }
 

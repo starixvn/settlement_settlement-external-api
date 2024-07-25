@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Settlement.External.Constants;
-using Settlement.External.DTOs;
 using Settlement.External.Models;
 using Settlement.External.Services;
 
@@ -143,19 +142,21 @@ public class ValidationRequestServiceTests
             SecurityToken = "ABC",
             Matches =
             [
-                new() {
+                new()
+                {
                     MatchId = 1,
                     ResultInfo =
                     [
                         new() { HomeValue = "1", AwayValue = "1", SourceId = 1 }
                     ]
                 },
-                new() {
+                new()
+                {
                     MatchId = 0, // Invalid MatchId
 
                     ResultInfo =
                     [
-                        new () { HomeValue = "1", AwayValue = "1", SourceId = 1 }
+                        new() { HomeValue = "1", AwayValue = "1", SourceId = 1 }
                     ]
                 }
             ]
@@ -177,19 +178,20 @@ public class ValidationRequestServiceTests
             SecurityToken = "ABC",
             Matches =
             [
-                new ()
+                new()
                 {
                     MatchId = 1,
                     ResultInfo =
                     [
-                        new () { HomeValue = "1", AwayValue = "1", SourceId = 1 }
+                        new() { HomeValue = "1", AwayValue = "1", SourceId = 1 }
                     ]
                 },
-                new() {
+                new()
+                {
                     MatchId = 2,
                     ResultInfo =
                     [
-                        new () { HomeValue = "2", AwayValue = "2", SourceId = 2 }
+                        new() { HomeValue = "2", AwayValue = "2", SourceId = 2 }
                     ]
                 }
             ]

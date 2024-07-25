@@ -4,7 +4,7 @@ public class InsertMatchScoresCriteria : NonQueryCommand
 {
     public int SourceId { get; set; }
 
-    public string ResourceXML { get; set; }
+    public string ResourceXml { get; set; }
 
     public int ErrCode { get; set; }
 

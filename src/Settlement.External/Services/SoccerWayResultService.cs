@@ -1,8 +1,8 @@
-﻿using System.Text;
-using Settlement.External.Common;
+﻿using Settlement.External.Common;
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using Settlement.External.Models;
+using System.Text;
 
 namespace Settlement.External.Services;
 
@@ -79,7 +79,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         var criteria = new InsertMatchScoresCriteria
         {
             SourceId = Sources.SoccerWay,
-            ResourceXML = resourceXml
+            ResourceXml = resourceXml
         };
 
         var result = await InsertMatchScores(criteria);
