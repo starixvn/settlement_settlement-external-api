@@ -14,8 +14,8 @@ public interface SoccerWayResultService
 public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWayResultService
 {
     private const int Timer = 45;
-    private const string HomeGoal = "H";
-    private const string AwayGoal = "A";
+    private const char HomeGoal = 'H';
+    private const char AwayGoal = 'A';
     private const string Semicolon = ";";
 
     private int MatchId { get; set; }
@@ -46,7 +46,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
             : new Result();
     }
 
-    private async Task<Result> ProcessForAutoPayout(List<SoccerWayScore> listScore)
+    private async Task<Result> ProcessForAutoPayout(IEnumerable<SoccerWayScore> listScore)
     {
         var fullTimeScore = listScore
             .GroupBy(s => new { s.GoalTime, s.TotalScore })
@@ -55,12 +55,12 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
 
         var halfTimeScore = fullTimeScore.Where(s => s.GoalTime <= Timer).ToList();
 
-        return fullTimeScore.Any()
+        return fullTimeScore.Count > 0
             ? await AddScoreAndGoal(halfTimeScore, fullTimeScore)
             : await EmptyScoreInfo();
     }
 
-    private async Task<Result> ProcessForAutoInstant(List<SoccerWayScore> listScore)
+    private async Task<Result> ProcessForAutoInstant(IEnumerable<SoccerWayScore> listScore)
     {
         var autoInstantScores = listScore.Select(score => new AutoInstantScore
         {
@@ -154,7 +154,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
 
         foreach (var action in actions)
         {
-            var value = action == GoalType.HalfTime || action == GoalType.FullTime ? "0" : string.Empty;
+            var value = action is GoalType.HalfTime or GoalType.FullTime ? "0" : string.Empty;
             var criteria = new AddSoccerWayResultCriteria
             {
                 MatchId = MatchId,
@@ -224,7 +224,7 @@ public class SoccerWayResultServiceImp(IDynamicRepository repository) : SoccerWa
         return goal.ToString();
     }
 
-    private static string FullTimeGoalRecord(List<SoccerWayScore> listScore)
+    private static string FullTimeGoalRecord(IReadOnlyCollection<SoccerWayScore> listScore)
     {
         var halfTimeScore = listScore.Where(s => s.GoalTime <= Timer).ToList();
         var fullTimeScore = listScore.Where(s => s.GoalTime > Timer).ToList();

@@ -10,10 +10,6 @@ public interface ValidationRequestService
 {
     Result ValidResult(QueryRequest model);
 
-    Result MultiValidation(ListQueryRequest model);
-
-    bool ValidToken(string token);
-
     Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model);
 
     Result ValidGoalRecordRequest(GoalRecordRequest model);
@@ -36,29 +32,7 @@ public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
         return ValidScore(model.ResultInfo);
     }
 
-    public Result MultiValidation(ListQueryRequest model)
-    {
-        foreach (var item in model.Matches)
-        {
-            var queryMatch = new QueryRequest
-            {
-                MatchId = item.MatchId,
-                SecurityToken = model.SecurityToken,
-                ResultInfo = item.ResultInfo
-            };
-
-            var result = ValidResult(queryMatch);
-
-            if (result.IsFail)
-            {
-                return result;
-            }
-        }
-
-        return new Result();
-    }
-
-    private Result ValidScore(IList<Score> resultInfo)
+    private static Result ValidScore(IList<Score> resultInfo)
     {
         foreach (var item in resultInfo)
         {
@@ -76,12 +50,12 @@ public class ValidationRequestServiceImp(IOptions<AppSetting> appSettingOptions)
         return new Result { ErrorMsg = ErrorMessage.Success };
     }
 
-    private bool InvalidParameter(QueryRequest model) => model.MatchId < 1
-        || string.IsNullOrWhiteSpace(model.SecurityToken)
-        || model.ResultInfo == null;
+    private static bool InvalidParameter(QueryRequest model) => model.MatchId < 1
+                                                                || string.IsNullOrWhiteSpace(model.SecurityToken)
+                                                                || model.ResultInfo == null;
 
-    public bool ValidToken(string token) => !string.IsNullOrEmpty(token)
-        && appSettingOptions.Value.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
+    private bool ValidToken(string token) => !string.IsNullOrEmpty(token)
+                                             && appSettingOptions.Value.SecurityToken.Equals(token, StringComparison.CurrentCultureIgnoreCase);
 
     public Result ValidSettlementStatusRequest(SettlementStatusUpdRequest model)
     {

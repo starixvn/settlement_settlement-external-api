@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Settlement.External.DTOs;
 using Settlement.External.Models;
 using Settlement.ExternalApi.EndpointFilters;
 
@@ -15,8 +14,6 @@ public static class MatchesApi
         api.MapPost("singleMatch", CreateMatchResult).AddEndpointFilter<LogRequestFilter>();
         api.MapPost("goalRecord", CreateGoalRecord).AddEndpointFilter<LogRequestFilter>();
         api.MapPost("update-settlement-status", UpdateMatchSettlementStatus).AddEndpointFilter<LogRequestFilter>();
-        api.MapPost("multipleMatch", CreateMatchesResult).AddEndpointFilter<LogRequestFilter>();
-        api.MapGet("getMatchResult", GetMatchResult).AddEndpointFilter<LogRequestFilter>();
 
         return app;
     }
@@ -37,22 +34,6 @@ public static class MatchesApi
         return TypedResults.Ok(result);
     }
 
-    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateMatchesResult(
-        [FromBody] ListQueryRequest model,
-        MatchServices services)
-    {
-        var multiValid = services.ValidationService.MultiValidation(model);
-
-        if (multiValid.IsFail)
-        {
-            return TypedResults.BadRequest(multiValid);
-        }
-
-        var result = await services.ResultDetailsService.InsertMultiMatches(model);
-
-        return TypedResults.Ok(result);
-    }
-
     private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateMatchResult(
         [FromBody] QueryRequest model,
         MatchServices services)
@@ -67,22 +48,6 @@ public static class MatchesApi
         var result = await services.ResultDetailsService.Insert(model);
 
         return TypedResults.Ok(result);
-    }
-
-    private static async Task<Results<Ok<MatchDto>, BadRequest<Result>>> GetMatchResult(
-        int matchId,
-        string securityToken,
-        MatchServices services
-        )
-    {
-        if (!services.ValidationService.ValidToken(securityToken))
-        {
-            return TypedResults.BadRequest(Result.ErrorSecurityToken);
-        }
-
-        var match = await services.ResultDetailsService.GetMatch(matchId);
-
-        return TypedResults.Ok(match);
     }
 
     private static async Task<Results<Ok<Result>, BadRequest<Result>>> UpdateMatchSettlementStatus(
