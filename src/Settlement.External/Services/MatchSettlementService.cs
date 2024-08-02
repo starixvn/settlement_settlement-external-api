@@ -25,6 +25,8 @@ public class MatchSettlementServiceImp(
         {
             MatchId = model.MatchId,
             Type = model.Type,
+            AdminId = model.AdminId,
+            IsEnabled = model.IsEnabled,
             Ip = accessor.HttpContext.Connection.RemoteIpAddress.ToString()
         };
 
@@ -32,7 +34,7 @@ public class MatchSettlementServiceImp(
 
         var result = new Result
         {
-            ErrorCode = criteria.ErrorCode,
+            ErrorCode = criteria.ErrCode,
             ErrorMsg = criteria.ErrMsg,
         };
 

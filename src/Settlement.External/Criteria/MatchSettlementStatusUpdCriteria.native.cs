@@ -7,12 +7,11 @@ public class MatchSettlementStatusUpdCriteria : NonQueryCommand
     public short Type { get; set; }
 
     public string Ip { get; set; }
-
-    public string AdminId { get; set; }
+    public int AdminId { get; set; }
 
     public bool IsEnabled { get; set; }
 
-    public int ErrorCode { get; set; }
+    public int ErrCode { get; set; }
 
     public string ErrMsg { get; set; }
 

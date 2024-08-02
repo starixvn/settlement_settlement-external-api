@@ -9,4 +9,5 @@ public class SettlementStatusUpdRequest
     public bool IsEnabled { get; set; }
 
     public string SecurityToken { get; set; }
+    public int AdminId { get; set; }
 }

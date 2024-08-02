@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Settlement.External.Models;
 using Settlement.ExternalApi.EndpointFilters;
 
@@ -18,9 +17,7 @@ public static class MatchesApi
         return app;
     }
 
-    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateGoalRecord(
-        [FromBody] GoalRecordRequest model,
-        MatchServices services)
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateGoalRecord(GoalRecordRequest model, MatchServices services)
     {
         var valid = services.ValidationService.ValidGoalRecordRequest(model);
 
@@ -34,9 +31,7 @@ public static class MatchesApi
         return TypedResults.Ok(result);
     }
 
-    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateMatchResult(
-        [FromBody] QueryRequest model,
-        MatchServices services)
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> CreateMatchResult(QueryRequest model, MatchServices services)
     {
         var valid = services.ValidationService.ValidResult(model);
 
@@ -50,9 +45,7 @@ public static class MatchesApi
         return TypedResults.Ok(result);
     }
 
-    private static async Task<Results<Ok<Result>, BadRequest<Result>>> UpdateMatchSettlementStatus(
-        [FromBody] SettlementStatusUpdRequest model,
-        MatchServices services)
+    private static async Task<Results<Ok<Result>, BadRequest<Result>>> UpdateMatchSettlementStatus(SettlementStatusUpdRequest model, MatchServices services)
     {
         var validResult = services.ValidationService.ValidSettlementStatusRequest(model);
 
