@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Settlement.External.Constants;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using Settlement.External.Services;
 
 namespace Settlement.External.UnitTests.Services;

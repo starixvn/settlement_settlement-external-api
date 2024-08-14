@@ -4,7 +4,7 @@ using ILogger = Fanex.Logging.ILogger;
 
 namespace Settlement.ExternalApi.Middleware;
 
-public class ErrorHandler(RequestDelegate next, ILogger logger)
+public class ExceptionMiddleware(RequestDelegate next, ILogger logger)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -20,7 +20,7 @@ public class ErrorHandler(RequestDelegate next, ILogger logger)
 
     private async Task HandleException(HttpContext context, Exception exception)
     {
-        var logMessage = new LogMessage($"Error from broad cast api: {exception.Message}")
+        var logMessage = new LogMessage($"Error from external Api: {exception.Message}")
             .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
             .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
             .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
@@ -28,9 +28,9 @@ public class ErrorHandler(RequestDelegate next, ILogger logger)
         await logger.ErrorAsync(logMessage);
 
         var method = context.Request.Method.ToLowerInvariant();
-        var requestedWith = context.Request.Headers["X-Requested-With"];
+        var requestedWith = context.Request.Headers.XRequestedWith;
 
-        if ((method == "post" || method == "put" || method == "delete") && requestedWith == "XMLHttpRequest")
+        if (method is "post" or "put" or "delete" && requestedWith == "XMLHttpRequest")
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         }

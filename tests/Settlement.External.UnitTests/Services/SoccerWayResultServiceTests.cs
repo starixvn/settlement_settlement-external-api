@@ -2,6 +2,7 @@
 using NSubstitute;
 using Settlement.External.Criteria;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using Settlement.External.Services;
 
 namespace Settlement.External.UnitTests.Services;

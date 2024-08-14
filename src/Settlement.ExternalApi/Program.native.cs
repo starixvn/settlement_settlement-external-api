@@ -1,9 +1,11 @@
+using MinimalApi.Endpoint.Extensions;
 using Settlement.External.Models;
-using Settlement.ExternalApi.Apis;
 using Settlement.ExternalApi.Config;
 using Settlement.ExternalApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddEndpoints();
 
 builder.Services.AddHealthChecks();
 
@@ -23,12 +25,12 @@ app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<ErrorHandler>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseRouting();
 
 app.UseCors("AllowOrigin");
 
-app.MapMatchApi();
+app.MapEndpoints();
 
 app.Run();

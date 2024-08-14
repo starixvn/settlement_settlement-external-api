@@ -3,6 +3,7 @@ using NSubstitute;
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using Settlement.External.Services;
 
 namespace Settlement.External.UnitTests.Services;
@@ -25,7 +26,7 @@ public class ProviderResultServiceImpTests
         var model = new QueryRequest
         {
             MatchId = 1,
-            ResultInfo = [new() { HomeValue = "1", AwayValue = "0", SourceId = 1, TypeId = GoalType.HalfTime }]
+            ResultInfo = [new Score { HomeValue = "1", AwayValue = "0", SourceId = 1, TypeId = GoalType.HalfTime }]
         };
         repository.When(x => x.ExecuteAsync(Arg.Any<AddResultCriteria>()))
             .Do(_ => throw new Exception("Database error"));

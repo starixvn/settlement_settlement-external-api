@@ -2,6 +2,7 @@
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using System.Text;
 
 namespace Settlement.External.Services;

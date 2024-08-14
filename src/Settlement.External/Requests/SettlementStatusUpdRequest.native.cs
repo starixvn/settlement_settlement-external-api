@@ -1,4 +1,4 @@
-﻿namespace Settlement.External.Models;
+﻿namespace Settlement.External.Requests;
 
 public class SettlementStatusUpdRequest
 {

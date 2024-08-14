@@ -12,7 +12,6 @@ using ONEbook.UM.AspNetCore;
 using ONEbook.UM.Configurations;
 using ONEbook.UM.Transport;
 using Settlement.External.Services;
-using Settlement.ExternalApi.Apis;
 using SharpRaven;
 using StackExchange.Redis;
 using ILogger = Fanex.Logging.ILogger;
@@ -38,7 +37,6 @@ public static class InitializeConfigServices
         services.AddScoped<ValidationRequestService, ValidationRequestServiceImp>();
         services.AddScoped<MatchSettlementService, MatchSettlementServiceImp>();
 
-        services.AddScoped<MatchServices>();
         StartUmSetting(configuration);
         StartLogSetting(configuration);
         return services;

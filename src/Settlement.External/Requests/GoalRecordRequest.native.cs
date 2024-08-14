@@ -1,4 +1,6 @@
-﻿namespace Settlement.External.Models;
+﻿using Settlement.External.Models;
+
+namespace Settlement.External.Requests;
 
 public class GoalRecordRequest
 {

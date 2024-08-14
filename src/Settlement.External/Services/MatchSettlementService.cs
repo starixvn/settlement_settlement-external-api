@@ -2,6 +2,7 @@
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using StackExchange.Redis;
 
 namespace Settlement.External.Services;
