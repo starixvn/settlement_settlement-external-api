@@ -55,9 +55,12 @@ public class MatchSettlementServiceImp(
 
 		var key = $"{KeyConfirmRefund}:{model.MatchId}:01,00";
 
+		Console.WriteLine(key);
+
 		if (model.IsEnabled)
 		{
-			db.StringSet(key, true, TimeSpan.FromMinutes(10));
+			var setted = db.StringSet(key, true, TimeSpan.FromMinutes(2));
+			Console.WriteLine($"{key} {setted}");
 		}
 		else
 		{
