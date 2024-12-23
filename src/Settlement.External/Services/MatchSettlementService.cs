@@ -28,7 +28,7 @@ public class MatchSettlementServiceImp(
             Type = model.Type,
             AdminId = model.AdminId,
             IsEnabled = model.IsEnabled,
-            Ip = accessor.HttpContext.Connection.RemoteIpAddress.ToString()
+            Ip = accessor.HttpContext?.Connection.RemoteIpAddress?.ToString()
         };
 
         await repository.ExecuteAsync(criteria);

@@ -1,4 +1,4 @@
-FROM hub.nexdev.net/base/dotnet/core/sdk:8.0-alpine AS builder
+FROM hub.nexdev.net/base/dotnet/core/sdk:9.0-alpine AS builder
 
 WORKDIR /src
 # COPY Settlement.ExternalApi.sln .
@@ -18,7 +18,7 @@ WORKDIR /src/src/Settlement.ExternalApi
 RUN --mount=type=cache,target=/root/.nuget/packages \
 	dotnet publish -c release -o /app
 
-FROM hub.nexdev.net/base/dotnet/core/aspnet:8.0-alpine AS base
+FROM hub.nexdev.net/base/dotnet/core/aspnet:9.0-alpine AS base
 
 ENV COMPlus_EnableDiagnostics=0
 WORKDIR /app

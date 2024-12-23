@@ -39,4 +39,22 @@ public class ProviderResultServiceImpTests
         Assert.Equal(ErrorCode.SystemError, result.ErrorCode);
         Assert.Equal("Database error", result.ErrorMsg);
     }
+
+    [Fact]
+    public async Task Insert_Success_ReturnErrorMessageSuccess()
+    {
+        // Arrange
+        var model = new QueryRequest
+        {
+            MatchId = 1,
+            ResultInfo = [new Score { HomeValue = "1", AwayValue = "0", SourceId = 1, TypeId = GoalType.HalfTime }]
+        };
+
+        // Act
+        var result = await service.Insert(model);
+
+        // Assert
+        const string expected = "Success";
+        Assert.Equal(expected, result.ErrorMsg);
+    }
 }
