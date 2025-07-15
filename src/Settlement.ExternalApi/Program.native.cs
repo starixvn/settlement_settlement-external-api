@@ -21,7 +21,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/healthz");
 
 app.UseHttpsRedirection();
 
