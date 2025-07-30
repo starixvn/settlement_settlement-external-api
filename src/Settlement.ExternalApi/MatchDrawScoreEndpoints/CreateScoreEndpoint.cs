@@ -15,8 +15,7 @@ public class CreateScoreEndpoint(ProviderResultService providerResultService, Va
         app.MapPost("api/match/singleMatch",
             async (QueryRequest request) => await HandleAsync(request))
             .Produces<Result>()
-            .AddEndpointFilter<LogRequestFilter>()
-            .WithTags("DrawScoreAndGoalRecordEndpoints");
+            .AddEndpointFilter<LogRequestFilter>();
     }
 
     public async Task<IResult> HandleAsync(QueryRequest request)
