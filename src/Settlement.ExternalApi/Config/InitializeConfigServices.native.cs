@@ -28,6 +28,7 @@ public static class InitializeConfigServices
         services.AddScoped<SoccerWayResultService, SoccerWayResultServiceImp>();
         services.AddScoped<ValidationRequestService, ValidationRequestServiceImp>();
         services.AddScoped<MatchSettlementService, MatchSettlementServiceImp>();
+
         return services;
     }
 

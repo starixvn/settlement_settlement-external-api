@@ -11,6 +11,16 @@ builder.Services.AddHealthChecks();
 
 builder.Services.Configure<AppSetting>(builder.Configuration);
 
+builder.Services.AddCors(builder =>
+{
+    builder.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddInitialServices(builder.Configuration);
 
 var app = builder.Build();
@@ -19,6 +29,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    //app.MapOpenApi();
+    //app.MapScalarApiReference();
 }
 
 app.MapHealthChecks("/healthz");
@@ -29,7 +41,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseRouting();
 
-app.UseCors("AllowOrigin");
+app.UseCors();
 
 app.MapEndpoints();
 
