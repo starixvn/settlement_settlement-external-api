@@ -1,4 +1,5 @@
-﻿using MinimalApi.Endpoint;
+﻿using FluentValidation.AspNetCore.Http;
+using MinimalApi.Endpoint;
 using Settlement.External.Models;
 using Settlement.External.Requests;
 using Settlement.ExternalApi.EndpointFilters;
@@ -13,6 +14,7 @@ namespace Settlement.ExternalApi.InstantSettingEndpoints
                 async (ChangeInstantSettingRequest request) => await HandleAsync(request))
                 .Produces<Result>()
                 .AddEndpointFilter<LogRequestFilter>()
+                .AddEndpointFilter<FluentValidationEndpointFilter>()
                 .WithTags("ChangeMatchesSettingEndpoint");
         }
 

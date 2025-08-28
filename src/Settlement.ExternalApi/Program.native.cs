@@ -1,5 +1,7 @@
+using FluentValidation;
 using MinimalApi.Endpoint.Extensions;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using Settlement.ExternalApi.Config;
 using Settlement.ExternalApi.Middleware;
 
@@ -23,14 +25,15 @@ builder.Services.AddCors(builder =>
 
 builder.Services.AddInitialServices(builder.Configuration);
 
+builder.AddFluentValidationEndpointFilter();
+builder.Services.AddScoped<IValidator<ChangeInstantSettingRequest>, ChangeInstantSettingRequestValidator>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    //app.MapOpenApi();
-    //app.MapScalarApiReference();
 }
 
 app.MapHealthChecks("/healthz");

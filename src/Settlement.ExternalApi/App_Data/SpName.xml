@@ -8,4 +8,8 @@
 		<Setting Key="NAP_Set_AutoInstant_ProviderResultDetailIns" SpName="NAP_Set_AutoInstant_ProviderResultDetailIns" DbName="DBPRO.bodb02.wsv_nap" />
 	</Function>
 	<Setting Key="NAP_Set_SettlementStatusUpd" SpName="NAP_Set_SettlementStatusUpd" DbName="DBPRO.bodb02.wsv_nap" />
+	<Setting Key="NAP_Set_MatchSelInfo" SpName="NAP_Set_MatchSelInfo" DbName="DBPRO.bodb02.wsv_nap" />
+	<Setting Key="WriteLog_UserLog_Settle" SpName="WriteLog_UserLog_Settle" DbName="DBLOG.bodb_CustomerLog.wsv_nap" />
+
+
 </Functions>
