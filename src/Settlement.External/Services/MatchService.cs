@@ -2,7 +2,12 @@
 
 namespace Settlement.External.Services;
 
-public class MatchService(IDynamicRepository repository)
+public interface IMatchService
+{
+    Task<List<MatchDetail>> GetMatchDetailsAsync(string matchIds);
+}
+
+public class MatchService(IDynamicRepository repository) : IMatchService
 {
     public async Task<List<MatchDetail>> GetMatchDetailsAsync(string matchIds)
     {

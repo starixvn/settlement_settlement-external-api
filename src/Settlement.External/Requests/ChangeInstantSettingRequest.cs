@@ -6,6 +6,7 @@ public record MatchItem(int MatchId, string Remark);
 
 public record ChangeInstantSettingRequest(List<MatchItem> MatchItems);
 
+public record class MatchesChangedInstant(List<MatchItem> MatchItems);
 
 
 public class MatchItemValidator : AbstractValidator<MatchItem>

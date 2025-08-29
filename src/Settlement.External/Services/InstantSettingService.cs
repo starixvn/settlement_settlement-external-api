@@ -2,19 +2,29 @@
 using Settlement.External.Criteria;
 using Settlement.External.Models;
 using Settlement.External.Requests;
+using System.Text.Json;
 
 namespace Settlement.External.Services;
 
-public class InstantSettingService
+public interface IInstantSettingService
+{
+    Task<Result> ChangeInstantSetting(ChangeInstantSettingRequest request);
+}
+
+public class InstantSettingService : IInstantSettingService
 {
     private readonly static List<int> sabaLeague = [42, 73, 108];
     private readonly static List<int> pingoalLeague = [252, 113];
     private readonly IDynamicRepository _repository;
-    private readonly MatchService matchService;
-    public InstantSettingService(IDynamicRepository repository)
+    private readonly IMatchService matchService;
+
+    public InstantSettingService(IDynamicRepository repository, IMatchService matchService)
     {
         _repository = repository;
+        this.matchService = matchService;
+
     }
+
     public async Task<Result> ChangeInstantSetting(ChangeInstantSettingRequest request)
     {
         var matchIds = string.Join(",", request.MatchItems.Select(x => x.MatchId));
@@ -25,12 +35,28 @@ public class InstantSettingService
                 && m.ParentID == 0 && !sabaLeague.Contains(m.LeagueId)))
             .ToList();
 
+        var matchList = validMatches.Select(x => new MatchListItem
+        {
+            MatchId = x.MatchId,
+            Enable = !x.Remark.Contains(RemarkValue.NoInstant)
+        });
+
+        var matchListJson = JsonSerializer.Serialize(
+            matchList,
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
 
         var criteria = new ChangeInstantSettingCriteria
         {
-
+            MatchList = matchListJson
         };
-        var result = await _repository.ExecuteAsync(criteria);
+
+        await _repository.ExecuteAsync(criteria);
+
+        foreach (var item in matchList)
+        {
+            WriteLogUpdateMatchSetting(item.MatchId, item.Enable);
+        }
 
 
         return new Result();

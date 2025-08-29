@@ -10,6 +10,7 @@
 	<Setting Key="NAP_Set_SettlementStatusUpd" SpName="NAP_Set_SettlementStatusUpd" DbName="DBPRO.bodb02.wsv_nap" />
 	<Setting Key="NAP_Set_MatchSelInfo" SpName="NAP_Set_MatchSelInfo" DbName="DBPRO.bodb02.wsv_nap" />
 	<Setting Key="WriteLog_UserLog_Settle" SpName="WriteLog_UserLog_Settle" DbName="DBLOG.bodb_CustomerLog.wsv_nap" />
+	<Setting Key="NAP_Set_ToggleAutoInstant_OWP" SpName="NAP_Set_ToggleAutoInstant_OWP" DbName="DBPRO.bodb02.wsv_nap" />
 
-
+	
 </Functions>
