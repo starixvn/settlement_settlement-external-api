@@ -15,26 +15,40 @@ public class InstantSettingService(
     IMatchService matchService,
     Channel<List<MatchListItem>> channel) : IInstantSettingService
 {
-    private readonly static List<int> sabaLeague = [42, 73, 108];
+    private static readonly List<int> sabaLeague = [42, 73, 108];
 
     public async Task<Result> ChangeInstantSetting(ChangeInstantSettingRequest request)
     {
-        var matchIds = string.Join(",", request.MatchItems.Select(x => x.MatchId));
-        var matchesDetail = await matchService.GetMatchDetailsAsync(matchIds);
+        var validationResult = ChangeInstantSettingRequestValidator.ValidateRequest(request);
+
+        if (validationResult.IsFail)
+        {
+            return new Result { ErrorCode = validationResult.ErrorCode, ErrorMsg = validationResult.ErrorMsg };
+        }
+
+        var matchIds = string.Join(",", request.MatchItems.Select(item => item.MatchId));
+        var matchDetails = await matchService.GetMatchDetailsAsync(matchIds);
 
         var validMatches = request.MatchItems
-            .Where(x => matchesDetail.Exists(m => m.MatchId == x.MatchId
-                && m.ParentID == 0 && !sabaLeague.Contains(m.LeagueId)))
+            .Where(item => IsValidMatch(item, matchDetails))
             .ToList();
 
-        var matchList = validMatches.Select(x => new MatchListItem
+        var matchList = validMatches.Select(match => new MatchListItem
         {
-            MatchId = x.MatchId,
-            Enable = !x.Remark.Contains(RemarkValue.NoInstant)
+            MatchId = match.MatchId,
+            Enable = !match.Remark.Contains(RemarkValue.NoInstant, StringComparison.OrdinalIgnoreCase)
         });
 
         await channel.Writer.WriteAsync([.. matchList]);
 
         return new Result();
+    }
+
+    private static bool IsValidMatch(MatchItem item, List<MatchDetail> matchDetails)
+    {
+        return matchDetails.Any(detail =>
+            detail.MatchId == item.MatchId &&
+            detail.ParentID == 0 &&
+            !sabaLeague.Contains(detail.LeagueId));
     }
 }

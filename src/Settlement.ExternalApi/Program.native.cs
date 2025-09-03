@@ -13,9 +13,9 @@ builder.Services.AddHealthChecks();
 
 builder.Services.Configure<AppSetting>(builder.Configuration);
 
-builder.Services.AddCors(builder =>
+builder.Services.AddCors(options =>
 {
-    builder.AddDefaultPolicy(policy =>
+    options.AddDefaultPolicy(policy =>
     {
         policy.AllowAnyOrigin()
               .AllowAnyMethod()

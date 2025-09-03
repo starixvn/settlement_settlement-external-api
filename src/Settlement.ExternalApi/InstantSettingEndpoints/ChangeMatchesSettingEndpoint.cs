@@ -21,8 +21,8 @@ namespace Settlement.ExternalApi.InstantSettingEndpoints
 
         public async Task<IResult> HandleAsync(ChangeInstantSettingRequest request)
         {
-            await instantSettingService.ChangeInstantSetting(request);
-            return Results.Ok(new Result());
+            var result = await instantSettingService.ChangeInstantSetting(request);
+            return Results.Ok(result);
         }
     }
 }

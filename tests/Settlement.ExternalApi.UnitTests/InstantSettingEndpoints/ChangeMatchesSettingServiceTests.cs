@@ -14,8 +14,8 @@ public class ChangeMatchesSettingServiceTests
         // Arrange
         var matchList = new List<MatchListItem>
         {
-            new MatchListItem { MatchId = 1, Enable = true },
-            new MatchListItem { MatchId = 2, Enable = false }
+            new() { MatchId = 1, Enable = true },
+            new() { MatchId = 2, Enable = false }
         };
         var channel = Channel.CreateUnbounded<List<MatchListItem>>();
         await channel.Writer.WriteAsync(matchList);
@@ -30,7 +30,7 @@ public class ChangeMatchesSettingServiceTests
         // Assert
         await repository.Received(1).ExecuteAsync(Arg.Any<ChangeInstantSettingCriteria>(), cancellationToken: Arg.Any<CancellationToken>());
 
-        repository.Received().Execute(Arg.Is<LogCriteria>(c => c.MatchId == 1 && c.Remark.Contains("Instant(True)")));
-        repository.Received().Execute(Arg.Is<LogCriteria>(c => c.MatchId == 2 && c.Remark.Contains("Instant(False)")));
+        await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(c => c.MatchId == 1 && c.Remark.Contains("Instant(True)")), cancellationToken: cancellationToken);
+        await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(c => c.MatchId == 2 && c.Remark.Contains("Instant(False)")), cancellationToken: cancellationToken);
     }
 }

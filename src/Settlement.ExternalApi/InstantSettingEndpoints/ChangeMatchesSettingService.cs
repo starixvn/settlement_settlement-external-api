@@ -1,5 +1,4 @@
-﻿
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Settlement.External.Constants;
 using Settlement.External.Criteria;
 using System.Text.Json;
@@ -11,34 +10,39 @@ public class ChangeMatchesSettingService(
     Channel<List<MatchListItem>> channel,
     IDynamicRepository repository) : BackgroundService
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var matchList = await channel.Reader.ReadAsync(stoppingToken);
 
-        var matchListJson = JsonSerializer.Serialize(
-            matchList,
-            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-
-        var criteria = new ChangeInstantSettingCriteria
+        if (matchList.Count > 0)
         {
-            MatchList = matchListJson
-        };
+            var matchListJson = JsonSerializer.Serialize(
+                matchList,
+                JsonOptions);
 
-        await repository.ExecuteAsync(criteria, cancellationToken: stoppingToken);
+            var criteria = new ChangeInstantSettingCriteria
+            {
+                MatchList = matchListJson
+            };
 
-        foreach (var item in matchList)
-        {
-            WriteLogUpdateMatchSetting(item.MatchId, item.Enable);
+            await repository.ExecuteAsync(criteria, cancellationToken: stoppingToken);
+
+            var tasks = matchList.Select(matchItem =>
+                WriteLogUpdateMatchSetting(matchItem.MatchId, matchItem.Enable));
+            await Task.WhenAll(tasks);
         }
     }
 
-    private void WriteLogUpdateMatchSetting(int matchId, bool enable)
+    private async Task WriteLogUpdateMatchSetting(int matchId, bool enable)
     {
+        var message = $"NAP: Update auto setting on match({matchId}) has Instant({enable})";
+        var logCriteria = new LogCriteria(matchId, message, ActionId.AutoPayoutSettingMatch, 111);
 
-        var msg = $"NAP: Update auto setting on match({matchId}) has Instant({enable})";
-        var logCriteria = new LogCriteria(matchId, msg, ActionId.AutoPayoutSettingMatch, 111);
-
-        repository.Execute(logCriteria);
+        await repository.ExecuteAsync(logCriteria);
     }
 }

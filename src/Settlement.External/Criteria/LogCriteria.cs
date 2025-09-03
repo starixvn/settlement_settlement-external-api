@@ -1,26 +1,19 @@
 ﻿namespace Settlement.External.Criteria;
 
-public class LogCriteria : NonQueryCommand
+public class LogCriteria(int matchId, string errorMessage, int actionId, int userId)
+    : NonQueryCommand
 {
-    public LogCriteria(int matchId, string errorMessage, int actionId, int userId)
-    {
-        MatchId = matchId;
-        Remark = errorMessage;
-        ActionId = actionId;
-        UserId = userId;
-    }
+    public int UserId { get; set; } = userId;
 
+    public int? MatchId { get; set; } = matchId;
 
-    public int UserId { get; set; }
+    public string Remark { get; set; } = errorMessage;
 
-    public int? MatchId { get; set; }
-
-    public string Remark { get; set; }
     public string RemarkJson { get; set; }
 
     public string Ip => string.Empty;
 
-    public int ActionId { get; set; }
+    public int ActionId { get; set; } = actionId;
 
     public override bool IsValid() => true;
 

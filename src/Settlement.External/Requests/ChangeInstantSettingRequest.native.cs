@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Settlement.External.Models;
 
 namespace Settlement.External.Requests;
 
@@ -6,25 +7,28 @@ public record MatchItem(int MatchId, string Remark);
 
 public record ChangeInstantSettingRequest(List<MatchItem> MatchItems);
 
-public record MatchesChangedInstant(List<MatchItem> MatchItems);
-
-
-public class MatchItemValidator : AbstractValidator<MatchItem>
+public abstract class MatchItemValidator : AbstractValidator<MatchItem>
 {
-    public MatchItemValidator()
+    public static Result ValidateMatchItem(MatchItem item)
     {
-        RuleFor(x => x.MatchId)
-            .GreaterThan(0).WithMessage("MatchId must be greater than 0.");
+        return item.MatchId <= 0 ? new Result { ErrorCode = 1, ErrorMsg = "MatchId must be greater than 0." } : new Result();
     }
 }
 
 public class ChangeInstantSettingRequestValidator : AbstractValidator<ChangeInstantSettingRequest>
 {
-    public ChangeInstantSettingRequestValidator()
+    public static Result ValidateRequest(ChangeInstantSettingRequest request)
     {
-        RuleFor(x => x.MatchItems)
-            .NotEmpty().WithMessage("MatchItems cannot be empty.");
+        if (request.MatchItems == null || request.MatchItems.Count == 0)
+        {
+            return new Result { ErrorCode = 2, ErrorMsg = "MatchItems cannot be empty." };
+        }
 
-        RuleForEach(x => x.MatchItems).SetValidator(new MatchItemValidator());
+        foreach (var itemResult in request.MatchItems.Select(MatchItemValidator.ValidateMatchItem).Where(itemResult => itemResult.IsFail))
+        {
+            return itemResult;
+        }
+
+        return new Result();
     }
 }
