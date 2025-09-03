@@ -2,7 +2,7 @@
 using Settlement.External.Criteria;
 using Settlement.External.Models;
 using Settlement.External.Requests;
-using System.Text.Json;
+using System.Threading.Channels;
 
 namespace Settlement.External.Services;
 
@@ -11,19 +11,11 @@ public interface IInstantSettingService
     Task<Result> ChangeInstantSetting(ChangeInstantSettingRequest request);
 }
 
-public class InstantSettingService : IInstantSettingService
+public class InstantSettingService(
+    IMatchService matchService,
+    Channel<List<MatchListItem>> channel) : IInstantSettingService
 {
     private readonly static List<int> sabaLeague = [42, 73, 108];
-    private readonly static List<int> pingoalLeague = [252, 113];
-    private readonly IDynamicRepository _repository;
-    private readonly IMatchService matchService;
-
-    public InstantSettingService(IDynamicRepository repository, IMatchService matchService)
-    {
-        _repository = repository;
-        this.matchService = matchService;
-
-    }
 
     public async Task<Result> ChangeInstantSetting(ChangeInstantSettingRequest request)
     {
@@ -41,33 +33,8 @@ public class InstantSettingService : IInstantSettingService
             Enable = !x.Remark.Contains(RemarkValue.NoInstant)
         });
 
-        var matchListJson = JsonSerializer.Serialize(
-            matchList,
-            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-
-        var criteria = new ChangeInstantSettingCriteria
-        {
-            MatchList = matchListJson
-        };
-
-        await _repository.ExecuteAsync(criteria);
-
-        foreach (var item in matchList)
-        {
-            WriteLogUpdateMatchSetting(item.MatchId, item.Enable);
-        }
-
+        await channel.Writer.WriteAsync([.. matchList]);
 
         return new Result();
-    }
-
-    private void WriteLogUpdateMatchSetting(int matchId, bool enable)
-    {
-
-        var msg = $"NAP: Update auto setting on match({matchId}) has Instant({enable})";
-        var logCriteria = new LogCriteria(matchId, msg, ActionId.AutoPayoutSettingMatch, 100);
-
-        _repository.Execute(logCriteria);
     }
 }

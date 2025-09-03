@@ -1,5 +1,4 @@
 ﻿using FluentValidation.AspNetCore.Http;
-using MassTransit;
 using MinimalApi.Endpoint;
 using Settlement.External.Models;
 using Settlement.External.Requests;
@@ -8,7 +7,7 @@ using Settlement.ExternalApi.EndpointFilters;
 
 namespace Settlement.ExternalApi.InstantSettingEndpoints
 {
-    public class ChangeMatchesSettingEndpoint(IPublishEndpoint publishEndpoint, IInstantSettingService instantSettingService) : IEndpoint<IResult, ChangeInstantSettingRequest>
+    public class ChangeMatchesSettingEndpoint(IInstantSettingService instantSettingService) : IEndpoint<IResult, ChangeInstantSettingRequest>
     {
         public void AddRoute(IEndpointRouteBuilder app)
         {
@@ -23,8 +22,6 @@ namespace Settlement.ExternalApi.InstantSettingEndpoints
         public async Task<IResult> HandleAsync(ChangeInstantSettingRequest request)
         {
             await instantSettingService.ChangeInstantSetting(request);
-            //await publishEndpoint.Publish(new MatchesChangedInstant(request.MatchItems));
-
             return Results.Ok(new Result());
         }
     }

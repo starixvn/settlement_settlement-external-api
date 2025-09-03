@@ -4,11 +4,11 @@ using Fanex.Data.Repository;
 using Fanex.Data.SqlServer;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
-using MassTransit;
-using Settlement.External.Consumers;
-using Settlement.External.Models;
+using Settlement.External.Criteria;
 using Settlement.External.Services;
+using Settlement.ExternalApi.InstantSettingEndpoints;
 using StackExchange.Redis;
+using System.Threading.Channels;
 using ILogger = Fanex.Logging.ILogger;
 
 namespace Settlement.ExternalApi.Config;
@@ -23,7 +23,6 @@ public static class InitializeConfigServices
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        services.AddRabbitMq(configuration);
 
         services.AddTransient<ILogger, Logger>();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -34,6 +33,8 @@ public static class InitializeConfigServices
         services.AddScoped<MatchSettlementService, MatchSettlementServiceImp>();
         services.AddTransient<IMatchService, MatchService>();
         services.AddTransient<IInstantSettingService, InstantSettingService>();
+        services.AddSingleton(Channel.CreateUnbounded<List<MatchListItem>>());
+        services.AddHostedService<ChangeMatchesSettingService>();
 
         return services;
     }
@@ -49,26 +50,4 @@ public static class InitializeConfigServices
         services.AddSingleton<ICacheService>(new CacheService());
     }
 
-
-    private static IServiceCollection AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
-    {
-        var rabbitMqSetting = configuration.GetSection(RabbitMqSetting.SectionName).Get<RabbitMqSetting>();
-        services.AddMassTransit(x =>
-        {
-            x.AddConsumer<ChangeInstantSettingConsumer>();
-            x.SetKebabCaseEndpointNameFormatter();
-            x.UsingRabbitMq((context, cfg) =>
-            {
-                cfg.Host(rabbitMqSetting.Host, rabbitMqSetting.VirtualHost, h =>
-                {
-                    h.Username(rabbitMqSetting.UserName);
-                    h.Password(rabbitMqSetting.Password);
-                });
-
-                cfg.ConfigureEndpoints(context);
-            });
-        });
-
-        return services;
-    }
 }
