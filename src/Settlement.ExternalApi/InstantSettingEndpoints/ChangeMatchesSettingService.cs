@@ -17,13 +17,18 @@ public class ChangeMatchesSettingService(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var matchList = await channel.Reader.ReadAsync(stoppingToken);
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var matchList = await channel.Reader.ReadAsync(stoppingToken);
+            await ProcessMatches(matchList, stoppingToken);
+        }
+    }
 
+    private async Task ProcessMatches(List<MatchListItem> matchList, CancellationToken stoppingToken)
+    {
         if (matchList.Count > 0)
         {
-            var matchListJson = JsonSerializer.Serialize(
-                matchList,
-                JsonOptions);
+            var matchListJson = JsonSerializer.Serialize(matchList, JsonOptions);
 
             var criteria = new ChangeInstantSettingCriteria
             {
@@ -41,7 +46,7 @@ public class ChangeMatchesSettingService(
     private async Task WriteLogUpdateMatchSetting(int matchId, bool enable)
     {
         var message = $"NAP: Update auto setting on match({matchId}) has Instant({enable})";
-        var logCriteria = new LogCriteria(matchId, message, ActionId.AutoPayoutSettingMatch, 111);
+        var logCriteria = new LogCriteria(matchId, message, ActionId.AutoPayoutSettingMatch);
 
         await repository.ExecuteAsync(logCriteria);
     }

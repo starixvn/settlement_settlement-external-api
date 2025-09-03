@@ -1,9 +1,9 @@
 ﻿namespace Settlement.External.Criteria;
 
-public class LogCriteria(int matchId, string errorMessage, int actionId, int userId)
+public class LogCriteria(int matchId, string errorMessage, int actionId)
     : NonQueryCommand
 {
-    public int UserId { get; set; } = userId;
+    public int UserId { get; set; }
 
     public int? MatchId { get; set; } = matchId;
 

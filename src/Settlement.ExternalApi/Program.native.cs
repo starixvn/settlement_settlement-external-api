@@ -48,4 +48,4 @@ app.UseCors();
 
 app.MapEndpoints();
 
-app.Run();
+await app.RunAsync();

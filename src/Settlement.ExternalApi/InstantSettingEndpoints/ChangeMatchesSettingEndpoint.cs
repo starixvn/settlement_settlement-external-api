@@ -11,7 +11,7 @@ namespace Settlement.ExternalApi.InstantSettingEndpoints
     {
         public void AddRoute(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/matches/change-instant-setting",
+            app.MapPost("api/match/change-instant-setting",
                 async (ChangeInstantSettingRequest request) => await HandleAsync(request))
                 .Produces<Result>()
                 .AddEndpointFilter<LogRequestFilter>()
