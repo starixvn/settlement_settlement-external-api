@@ -50,9 +50,9 @@ public class CreateGoalRecordEndpointTests
         var result = await endpoint.HandleAsync(request);
         var okResult = (Ok<Result>)result;
 
-        Assert.IsType<Result>(okResult?.Value);
+        Assert.IsType<Result>(okResult.Value);
         Assert.Equal(200, okResult.StatusCode);
-        Assert.Equal("Success", okResult?.Value?.ErrorMsg);
+        Assert.Equal("Success", okResult.Value.ErrorMsg);
     }
 
     [Fact]

@@ -1,5 +1,7 @@
+using FluentValidation;
 using MinimalApi.Endpoint.Extensions;
 using Settlement.External.Models;
+using Settlement.External.Requests;
 using Settlement.ExternalApi.Config;
 using Settlement.ExternalApi.Middleware;
 
@@ -11,7 +13,20 @@ builder.Services.AddHealthChecks();
 
 builder.Services.Configure<AppSetting>(builder.Configuration);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddInitialServices(builder.Configuration);
+
+builder.AddFluentValidationEndpointFilter();
+builder.Services.AddScoped<IValidator<ChangeInstantSettingRequest>, ChangeInstantSettingRequestValidator>();
 
 var app = builder.Build();
 
@@ -29,8 +44,8 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseRouting();
 
-app.UseCors("AllowOrigin");
+app.UseCors();
 
 app.MapEndpoints();
 
-app.Run();
+await app.RunAsync();
