@@ -46,9 +46,28 @@ public class InstantSettingService(
 
     private static bool IsValidMatch(MatchItem item, List<MatchDetail> matchDetails)
     {
-        return matchDetails.Exists(detail =>
-            detail.MatchId == item.MatchId &&
-            detail.ParentID == 0 &&
-            !sabaLeague.Contains(detail.LeagueId));
+        const string eventStatus = "running";
+
+        return matchDetails.Exists(detail => IsValidMatchDetail(item, detail, eventStatus));
+    }
+
+    private static bool IsValidMatchDetail(MatchItem item, MatchDetail detail, string eventStatus)
+    {
+        if (detail.MatchId != item.MatchId || detail.ParentID != 0)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(detail.EventStatus))
+        {
+            return false;
+        }
+
+        if (!detail.EventStatus.Equals(eventStatus, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return !sabaLeague.Contains(detail.LeagueId);
     }
 }

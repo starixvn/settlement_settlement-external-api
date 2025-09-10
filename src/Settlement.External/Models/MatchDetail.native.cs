@@ -1,4 +1,5 @@
 ﻿namespace Settlement.External.Models;
+
 public class MatchDetail
 {
     public int MatchId { get; set; }
@@ -12,6 +13,8 @@ public class MatchDetail
     public int OverTimeSession { get; set; }
 
     public string BetStatus { get; set; }
+
+    public string EventStatus { get; set; }
 
     public int ParentID { get; set; }
 

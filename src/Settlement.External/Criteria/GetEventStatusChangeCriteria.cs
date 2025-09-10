@@ -1,0 +1,12 @@
+﻿namespace Settlement.External.Criteria;
+
+public class GetEventStatusChangeCriteria : CriteriaBase
+{
+    public DateTime FromDate { get; set; }
+
+    public DateTime ToDate { get; set; }
+
+    public override string GetSettingKey() => "NAP_Set_EventStatusChange_Sel";
+
+    public override bool IsValid() => FromDate <= ToDate;
+}

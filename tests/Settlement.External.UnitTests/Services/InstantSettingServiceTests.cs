@@ -23,8 +23,8 @@ public class InstantSettingServiceTests
         var request = new ChangeInstantSettingRequest(matchItems);
         var matchDetails = new List<MatchDetail>
         {
-            new() { MatchId = 1, ParentID = 0, LeagueId = 10 },
-            new() { MatchId = 2, ParentID = 0, LeagueId = 10 },
+            new() { MatchId = 1, ParentID = 0, LeagueId = 10,  EventStatus = "running" },
+            new() { MatchId = 2, ParentID = 0, LeagueId = 10,  EventStatus = "running" },
             new() { MatchId = 42, ParentID = 0, LeagueId = 42 }, // in sabaLeague
             new() { MatchId = 3, ParentID = 0, LeagueId = 73 }, // in sabaLeague
         };
@@ -55,8 +55,8 @@ public class InstantSettingServiceTests
         var request = new ChangeInstantSettingRequest(matchItems);
         var matchDetails = new List<MatchDetail>
         {
-            new() { MatchId = 2, ParentID = 0, LeagueId = 10 },
-            new() { MatchId = 6, ParentID = 0, LeagueId = 10 },
+            new() { MatchId = 2, ParentID = 0, LeagueId = 10, EventStatus = "running"},
+            new() { MatchId = 6, ParentID = 0, LeagueId = 10 , EventStatus = "running"},
         };
         var matchService = Substitute.For<IMatchService>();
         matchService.GetMatchDetailsAsync(Arg.Any<string>()).Returns(matchDetails);
