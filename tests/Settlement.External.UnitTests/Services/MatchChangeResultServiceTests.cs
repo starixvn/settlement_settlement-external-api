@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Options;
 using NSubstitute;
+using Settlement.External.Models;
 using Settlement.External.Requests;
 using Settlement.External.Services;
 
@@ -6,13 +8,15 @@ namespace Settlement.External.UnitTests.Services;
 
 public class MatchChangeResultServiceTests
 {
-    private readonly IMatchService _matchService;
-    private readonly MatchChangeResultServiceImp _service;
+    private readonly IMatchService matchService;
+    private readonly MatchChangeResultServiceImp service;
 
     public MatchChangeResultServiceTests()
     {
-        _matchService = Substitute.For<IMatchService>();
-        _service = new MatchChangeResultServiceImp(_matchService);
+        matchService = Substitute.For<IMatchService>();
+        var appSettings = Substitute.For<IOptions<AppSetting>>();
+        appSettings.Value.Returns(new AppSetting { EnvironmentName = "TEST" });
+        service = new MatchChangeResultServiceImp(matchService, appSettings);
     }
 
     [Fact]
@@ -24,16 +28,16 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int> { 1, 2, 3 };
         var resultChangeMatches = new List<int> { 2, 3, 4 };
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("1,2,3,4", result);
-        await _matchService.Received(1).GetMatchesEventStatusChange(request);
-        await _matchService.Received(1).GetMatchesResultChange(request);
+        await matchService.Received(1).GetMatchesEventStatusChange(request);
+        await matchService.Received(1).GetMatchesResultChange(request);
     }
 
     [Fact]
@@ -45,11 +49,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int> { 1, 2, 3 };
         var resultChangeMatches = new List<int>();
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("1,2,3", result);
@@ -64,11 +68,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int>();
         var resultChangeMatches = new List<int> { 4, 5, 6 };
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("4,5,6", result);
@@ -83,11 +87,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int>();
         var resultChangeMatches = new List<int>();
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("", result);
@@ -102,11 +106,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int> { 1, 1, 2, 2, 3 };
         var resultChangeMatches = new List<int> { 2, 2, 3, 3, 4 };
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("1,2,3,4", result);
@@ -121,11 +125,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int> { 1, 2, 3 };
         var resultChangeMatches = new List<int> { 1, 2, 3 };
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("1,2,3", result);
@@ -140,11 +144,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int> { 100 };
         var resultChangeMatches = new List<int> { 200 };
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("100,200", result);
@@ -159,11 +163,11 @@ public class MatchChangeResultServiceTests
         var eventStatusMatches = new List<int> { 999999, 1000000 };
         var resultChangeMatches = new List<int> { 1000000, 1000001 };
 
-        _matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
-        _matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
+        matchService.GetMatchesEventStatusChange(request).Returns(eventStatusMatches);
+        matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
         // Act
-        var result = await _service.GetDistinctMatchesWithChanges(request);
+        var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
         Assert.Equal("999999,1000000,1000001", result);

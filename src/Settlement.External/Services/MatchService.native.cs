@@ -31,7 +31,8 @@ public class MatchService(IDynamicRepository repository) : IMatchService
         var criteria = new Criteria.GetEventStatusChangeCriteria
         {
             FromDate = DateTime.Parse(request.FromDate),
-            ToDate = DateTime.Parse(request.ToDate)
+            ToDate = DateTime.Parse(request.ToDate),
+            IsTest = request.IsTest
         };
         var result = await repository.FetchAsync<int>(criteria);
         return [.. result];
@@ -42,7 +43,8 @@ public class MatchService(IDynamicRepository repository) : IMatchService
         var criteria = new Criteria.GetResultChangeCriteria
         {
             FromDate = DateTime.Parse(request.FromDate),
-            ToDate = DateTime.Parse(request.ToDate)
+            ToDate = DateTime.Parse(request.ToDate),
+            IsTest = request.IsTest
         };
         var result = await repository.FetchAsync<int>(criteria);
         return [.. result];

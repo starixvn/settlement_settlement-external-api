@@ -6,6 +6,8 @@ public class GetEventStatusChangeCriteria : CriteriaBase
 
     public DateTime ToDate { get; set; }
 
+    public bool IsTest { get; set; }
+
     public override string GetSettingKey() => "NAP_Set_EventStatusChange_Sel";
 
     public override bool IsValid() => FromDate <= ToDate;
