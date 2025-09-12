@@ -23,10 +23,10 @@ public class InstantSettingServiceTests
         var request = new ChangeInstantSettingRequest(matchItems);
         var matchDetails = new List<MatchDetail>
         {
-            new() { MatchId = 1, ParentID = 0, LeagueId = 10 },
-            new() { MatchId = 2, ParentID = 0, LeagueId = 10 },
-            new() { MatchId = 42, ParentID = 0, LeagueId = 42 }, // in sabaLeague
-            new() { MatchId = 3, ParentID = 0, LeagueId = 73 }, // in sabaLeague
+            new() { MatchId = 1, ParentID = 0, LeagueGroupId = 10 },
+            new() { MatchId = 2, ParentID = 0, LeagueGroupId = 10 },
+            new() { MatchId = 42, ParentID = 0, LeagueGroupId = 42 }, // in sabaLeague
+            new() { MatchId = 3, ParentID = 0, LeagueGroupId = 74 }, // in sabaLeague
         };
         var matchService = Substitute.For<IMatchService>();
         matchService.GetMatchDetailsAsync(Arg.Any<string>()).Returns(matchDetails);
@@ -70,5 +70,158 @@ public class InstantSettingServiceTests
         // Assert
         Assert.Contains(written, x => x.MatchId == 2 && !x.Enable);
         Assert.Contains(written, x => x.MatchId == 6 && x.Enable);
+    }
+
+    [Fact]
+    public async Task ChangeInstantSetting_ReturnsError_WhenValidationFails()
+    {
+        // Arrange
+        var matchService = Substitute.For<IMatchService>();
+        var channel = Channel.CreateUnbounded<List<MatchListItem>>();
+        var service = new InstantSettingService(matchService, channel);
+
+        var request = new ChangeInstantSettingRequest(new List<MatchItem>()); // Invalid: empty list
+
+        // Act
+        var result = await service.ChangeInstantSetting(request);
+
+        // Assert
+        Assert.NotEqual(0, result.ErrorCode);
+        Assert.NotEqual("Success", result.ErrorMsg);
+    }
+
+    [Fact]
+    public async Task ChangeInstantSetting_DoesNotPush_WhenNoValidMatches()
+    {
+        // Arrange
+        var matchService = Substitute.For<IMatchService>();
+        var channel = Channel.CreateUnbounded<List<MatchListItem>>();
+        var service = new InstantSettingService(matchService, channel);
+
+        var request = new ChangeInstantSettingRequest(new List<MatchItem>
+        {
+            new MatchItem(1, "remark")
+        });
+
+        matchService.GetMatchDetailsAsync(Arg.Any<string>())
+            .Returns(new List<MatchDetail>()); // No matching details
+
+        // Act
+        var result = await service.ChangeInstantSetting(request);
+
+        // Assert
+        Assert.Equal(0, result.ErrorCode);
+        Assert.Equal("Success", result.ErrorMsg);
+        Assert.False(channel.Reader.TryRead(out _));
+    }
+
+    [Fact]
+    public async Task ChangeInstantSetting_PushesToChannel_WhenValidMatch()
+    {
+        // Arrange
+        var matchService = Substitute.For<IMatchService>();
+        var channel = Channel.CreateUnbounded<List<MatchListItem>>();
+        var service = new InstantSettingService(matchService, channel);
+
+        var request = new ChangeInstantSettingRequest(new List<MatchItem>
+        {
+            new MatchItem(1, "remark")
+        });
+
+        matchService.GetMatchDetailsAsync(Arg.Any<string>())
+            .Returns(new List<MatchDetail>
+            {
+                new MatchDetail
+                {
+                    MatchId = 1,
+                    ParentID = 0,
+                    Eventstatus = "pending",
+                    LeagueGroupId = 1
+                }
+            });
+
+        // Act
+        var result = await service.ChangeInstantSetting(request);
+
+        // Assert
+        Assert.Equal(0, result.ErrorCode);
+        Assert.Equal("Success", result.ErrorMsg);
+        Assert.True(channel.Reader.TryRead(out var matchList));
+        Assert.Single(matchList);
+        Assert.Equal(1, matchList[0].MatchId);
+    }
+
+    [Fact]
+    public async Task ChangeInstantSetting_DisablesInstant_WhenRemarkContainsNoInstant()
+    {
+        // Arrange
+        var matchService = Substitute.For<IMatchService>();
+        var channel = Channel.CreateUnbounded<List<MatchListItem>>();
+        var service = new InstantSettingService(matchService, channel);
+
+        var request = new ChangeInstantSettingRequest(new List<MatchItem>
+        {
+            new MatchItem(2, "NoInstant")
+        });
+
+        matchService.GetMatchDetailsAsync(Arg.Any<string>())
+            .Returns(new List<MatchDetail>
+            {
+                new MatchDetail
+                {
+                    MatchId = 2,
+                    ParentID = 0,
+                    Eventstatus = "pending",
+                    LeagueGroupId = 1
+                }
+            });
+
+        // Act
+        await service.ChangeInstantSetting(request);
+
+        // Assert
+        Assert.True(channel.Reader.TryRead(out var matchList));
+        Assert.Single(matchList);
+        Assert.True(matchList[0].Enable);
+    }
+
+    [Fact]
+    public async Task ChangeInstantSetting_IgnoresCompletedOrSabaLeagueMatches()
+    {
+        // Arrange
+        var matchService = Substitute.For<IMatchService>();
+        var channel = Channel.CreateUnbounded<List<MatchListItem>>();
+        var service = new InstantSettingService(matchService, channel);
+
+        var request = new ChangeInstantSettingRequest(new List<MatchItem>
+        {
+            new MatchItem(3, "remark"),
+            new MatchItem(4, "remark")
+        });
+
+        matchService.GetMatchDetailsAsync(Arg.Any<string>())
+            .Returns(new List<MatchDetail>
+            {
+                new MatchDetail
+                {
+                    MatchId = 3,
+                    ParentID = 0,
+                    Eventstatus = "completed",
+                    LeagueGroupId = 1
+                },
+                new MatchDetail
+                {
+                    MatchId = 4,
+                    ParentID = 0,
+                    Eventstatus = "pending",
+                    LeagueGroupId = 42 // Saba league
+                }
+            });
+
+        // Act
+        await service.ChangeInstantSetting(request);
+
+        // Assert
+        Assert.False(channel.Reader.TryRead(out _));
     }
 }

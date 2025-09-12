@@ -15,7 +15,7 @@ public class InstantSettingService(
     IMatchService matchService,
     Channel<List<MatchListItem>> channel) : IInstantSettingService
 {
-    private static readonly List<int> sabaLeague = [42, 73, 108];
+    private static readonly List<int> sabaLeague = [42, 74, 108, 113, 252];
 
     public async Task<Result> ChangeInstantSetting(ChangeInstantSettingRequest request)
     {
@@ -26,10 +26,11 @@ public class InstantSettingService(
             return new Result { ErrorCode = validationResult.ErrorCode, ErrorMsg = validationResult.ErrorMsg };
         }
 
-        var matchIds = string.Join(",", request.MatchItems.Select(item => item.MatchId));
+        var matchIds = string.Join(",", request.MatchItems.Select(item => item.MatchId).Distinct());
         var matchDetails = await matchService.GetMatchDetailsAsync(matchIds);
 
         var validMatches = request.MatchItems
+            .DistinctBy(x => x.MatchId)
             .Where(item => IsValidMatch(item, matchDetails))
             .ToList();
 
@@ -37,9 +38,12 @@ public class InstantSettingService(
         {
             MatchId = match.MatchId,
             Enable = !match.Remark.Contains(RemarkValue.NoInstant, StringComparison.OrdinalIgnoreCase)
-        });
+        }).ToList();
 
-        await channel.Writer.WriteAsync([.. matchList]);
+        if (matchList.Count != 0)
+        {
+            await channel.Writer.WriteAsync(matchList);
+        }
 
         return new Result();
     }
@@ -49,6 +53,7 @@ public class InstantSettingService(
         return matchDetails.Exists(detail =>
             detail.MatchId == item.MatchId &&
             detail.ParentID == 0 &&
-            !sabaLeague.Contains(detail.LeagueId));
+            !string.Equals(detail.Eventstatus ?? string.Empty, "completed", StringComparison.OrdinalIgnoreCase) &&
+            !sabaLeague.Contains(detail.LeagueGroupId));
     }
 }

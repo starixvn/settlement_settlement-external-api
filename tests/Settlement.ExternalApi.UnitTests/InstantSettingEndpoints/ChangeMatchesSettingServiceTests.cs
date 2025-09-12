@@ -22,13 +22,15 @@ public class ChangeMatchesSettingServiceTests
         var repository = Substitute.For<IDynamicRepository>();
         var service = new ChangeMatchesSettingService(channel, repository);
         var cancellationToken = CancellationToken.None;
+        repository.FetchAsync<int>(Arg.Any<ChangeInstantSettingCriteria>(), cancellationToken: Arg.Any<CancellationToken>())
+            .Returns([1, 2]);
 
         // Act
         await service.StartAsync(cancellationToken);
         await service.StopAsync(cancellationToken);
 
         // Assert
-        await repository.Received(1).ExecuteAsync(Arg.Any<ChangeInstantSettingCriteria>(), cancellationToken: Arg.Any<CancellationToken>());
+        await repository.Received(1).FetchAsync<int>(Arg.Any<ChangeInstantSettingCriteria>(), cancellationToken: Arg.Any<CancellationToken>());
 
         await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(c => c.MatchId == 1 && c.Remark.Contains("Instant(True)")), cancellationToken: cancellationToken);
         await repository.Received().ExecuteAsync(Arg.Is<LogCriteria>(c => c.MatchId == 2 && c.Remark.Contains("Instant(False)")), cancellationToken: cancellationToken);

@@ -19,28 +19,30 @@ public class ChangeMatchesSettingService(
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var matchList = await channel.Reader.ReadAsync(stoppingToken);
+            var matchList = (await channel.Reader.ReadAsync(stoppingToken))
+                .ToList();
+
             await ProcessMatches(matchList, stoppingToken);
         }
     }
 
     private async Task ProcessMatches(List<MatchListItem> matchList, CancellationToken stoppingToken)
     {
-        if (matchList.Count > 0)
+        var matchListJson = JsonSerializer.Serialize(matchList, JsonOptions);
+
+        var criteria = new ChangeInstantSettingCriteria
         {
-            var matchListJson = JsonSerializer.Serialize(matchList, JsonOptions);
+            MatchList = matchListJson
+        };
 
-            var criteria = new ChangeInstantSettingCriteria
-            {
-                MatchList = matchListJson
-            };
+        var matchListChange = await repository.FetchAsync<int>(criteria, cancellationToken: stoppingToken);
 
-            await repository.ExecuteAsync(criteria, cancellationToken: stoppingToken);
+        var tasks = matchList
+            .Where(x => matchListChange.Contains(x.MatchId))
+            .Select(matchItem => WriteLogUpdateMatchSetting(matchItem.MatchId, matchItem.Enable))
+            .ToList();
 
-            var tasks = matchList.Select(matchItem =>
-                WriteLogUpdateMatchSetting(matchItem.MatchId, matchItem.Enable));
-            await Task.WhenAll(tasks);
-        }
+        await Task.WhenAll(tasks);
     }
 
     private async Task WriteLogUpdateMatchSetting(int matchId, bool enable)
