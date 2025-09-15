@@ -51,9 +51,9 @@ public class InstantSettingService(
     private static bool IsValidMatch(MatchItem item, List<MatchDetail> matchDetails)
     {
         return matchDetails.Exists(detail =>
-            detail.MatchId == item.MatchId &&
-            detail.ParentID == 0 &&
-            !string.Equals(detail.Eventstatus ?? string.Empty, "completed", StringComparison.OrdinalIgnoreCase) &&
-            !sabaLeague.Contains(detail.LeagueGroupId));
+           detail.MatchId == item.MatchId &&
+           detail.ParentID == 0 &&
+           !string.Equals(detail.Eventstatus ?? string.Empty, "completed", StringComparison.OrdinalIgnoreCase) &&
+           !sabaLeague.Contains(detail.LeagueGroupId));
     }
 }

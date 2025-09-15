@@ -16,7 +16,7 @@ public class UpdateMatchStatusEndpoint(MatchSettlementService matchSettlementSer
             async (SettlementStatusUpdRequest request) => await HandleAsync(request))
             .Produces<Result>()
             .AddEndpointFilter<LogRequestFilter>()
-            .WithTags("UpdateSettlementStatusEndpoints");
+            .WithTags("MatchStatusEndpoints");
     }
 
     public async Task<IResult> HandleAsync(SettlementStatusUpdRequest request)

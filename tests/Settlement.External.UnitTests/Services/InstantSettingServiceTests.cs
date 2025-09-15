@@ -55,8 +55,8 @@ public class InstantSettingServiceTests
         var request = new ChangeInstantSettingRequest(matchItems);
         var matchDetails = new List<MatchDetail>
         {
-            new() { MatchId = 2, ParentID = 0, LeagueId = 10 },
-            new() { MatchId = 6, ParentID = 0, LeagueId = 10 },
+            new() { MatchId = 2, ParentID = 0, LeagueId = 10, EventStatus = "running"},
+            new() { MatchId = 6, ParentID = 0, LeagueId = 10 , EventStatus = "running"},
         };
         var matchService = Substitute.For<IMatchService>();
         matchService.GetMatchDetailsAsync(Arg.Any<string>()).Returns(matchDetails);

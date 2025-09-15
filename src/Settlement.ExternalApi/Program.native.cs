@@ -30,11 +30,8 @@ builder.Services.AddScoped<IValidator<ChangeInstantSettingRequest>, ChangeInstan
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapHealthChecks("/healthz");
 

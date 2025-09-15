@@ -31,6 +31,7 @@ public static class InitializeConfigServices
         services.AddScoped<SoccerWayResultService, SoccerWayResultServiceImp>();
         services.AddScoped<ValidationRequestService, ValidationRequestServiceImp>();
         services.AddScoped<MatchSettlementService, MatchSettlementServiceImp>();
+        services.AddScoped<MatchChangeResultService, MatchChangeResultServiceImp>();
         services.AddTransient<IMatchService, MatchService>();
         services.AddTransient<IInstantSettingService, InstantSettingService>();
         services.AddSingleton(Channel.CreateUnbounded<List<MatchListItem>>());
@@ -49,5 +50,4 @@ public static class InitializeConfigServices
         }));
         services.AddSingleton<ICacheService>(new CacheService());
     }
-
 }
