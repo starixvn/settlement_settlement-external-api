@@ -13,5 +13,4 @@
   <Setting Key="NAP_Set_ToggleAutoInstant_OWP" SpName="NAP_Set_ToggleAutoInstant_OWP" DbName="DBPRO.bodb02.wsv_nap" />
 
   <Setting Key="NAP_Set_ResultChangeLog_Sel" SpName="NAP_Set_ResultChangeLog_Sel" DbName="DBLOG.bodb_CustomerLog.wsv_nap" />
-  <Setting Key="NAP_Set_EventStatusChange_Sel" SpName="NAP_Set_EventStatusChange_Sel" DbName="DBTP.bodb02.wsv_nap" />
 </Functions>

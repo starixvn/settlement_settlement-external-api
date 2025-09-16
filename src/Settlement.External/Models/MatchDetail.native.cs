@@ -40,6 +40,4 @@ public class MatchDetail
     public int HomeId { get; set; }
 
     public int AwayId { get; set; }
-
-    public string Eventstatus { get; set; } = string.Empty;
 }

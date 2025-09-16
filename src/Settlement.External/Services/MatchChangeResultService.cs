@@ -15,11 +15,9 @@ public class MatchChangeResultServiceImp(IMatchService matchService,
     public async Task<string> GetDistinctMatchesWithChanges(ChangeResultMatchRequest request)
     {
         request.IsTest = appSettingsKey.Value.EnvironmentName != "PRO";
-        var eventStatusMatches = await matchService.GetMatchesEventStatusChange(request);
         var resultChangeMatches = await matchService.GetMatchesResultChange(request);
 
-        var distinctMatches = eventStatusMatches
-            .Union(resultChangeMatches)
+        var distinctMatches = resultChangeMatches
             .Distinct()
             .ToList();
 

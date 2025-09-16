@@ -135,7 +135,7 @@ public class InstantSettingServiceTests
                 {
                     MatchId = 1,
                     ParentID = 0,
-                    Eventstatus = "pending",
+                    EventStatus = "pending",
                     LeagueGroupId = 1
                 }
             });
@@ -171,7 +171,7 @@ public class InstantSettingServiceTests
                 {
                     MatchId = 2,
                     ParentID = 0,
-                    Eventstatus = "pending",
+                    EventStatus = "pending",
                     LeagueGroupId = 1
                 }
             });
@@ -206,14 +206,14 @@ public class InstantSettingServiceTests
                 {
                     MatchId = 3,
                     ParentID = 0,
-                    Eventstatus = "completed",
+                    EventStatus = "completed",
                     LeagueGroupId = 1
                 },
                 new MatchDetail
                 {
                     MatchId = 4,
                     ParentID = 0,
-                    Eventstatus = "pending",
+                    EventStatus = "pending",
                     LeagueGroupId = 42 // Saba league
                 }
             });

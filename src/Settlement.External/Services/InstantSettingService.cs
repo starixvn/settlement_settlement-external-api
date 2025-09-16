@@ -37,7 +37,7 @@ public class InstantSettingService(
         var matchList = validMatches.Select(match => new MatchListItem
         {
             MatchId = match.MatchId,
-            Enable = !match.Remark.Contains(RemarkValue.NoInstant, StringComparison.OrdinalIgnoreCase)
+            Enable = !match.Remark.Contains(RemarkValue.NoInstant, StringComparison.InvariantCultureIgnoreCase)
         }).ToList();
 
         if (matchList.Count != 0)
@@ -53,7 +53,7 @@ public class InstantSettingService(
         return matchDetails.Exists(detail =>
            detail.MatchId == item.MatchId &&
            detail.ParentID == 0 &&
-           !string.Equals(detail.Eventstatus ?? string.Empty, "completed", StringComparison.OrdinalIgnoreCase) &&
+           !string.Equals(detail.EventStatus ?? string.Empty, "completed", StringComparison.OrdinalIgnoreCase) &&
            !sabaLeague.Contains(detail.LeagueGroupId));
     }
 }
