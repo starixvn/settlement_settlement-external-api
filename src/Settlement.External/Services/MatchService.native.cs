@@ -7,7 +7,7 @@ public interface IMatchService
 {
     Task<List<MatchDetail>> GetMatchDetailsAsync(string matchIds);
 
-    Task<List<int>> GetMatchesResultChange(ChangeResultMatchRequest request);
+    Task<List<MatchResult>> GetMatchesResultChange(ChangeResultMatchRequest request);
 }
 
 public class MatchService(IDynamicRepository repository) : IMatchService
@@ -24,7 +24,7 @@ public class MatchService(IDynamicRepository repository) : IMatchService
         return [.. result];
     }
 
-    public async Task<List<int>> GetMatchesResultChange(ChangeResultMatchRequest request)
+    public async Task<List<MatchResult>> GetMatchesResultChange(ChangeResultMatchRequest request)
     {
         var criteria = new Criteria.GetResultChangeCriteria
         {
@@ -32,7 +32,7 @@ public class MatchService(IDynamicRepository repository) : IMatchService
             ToDate = DateTime.Parse(request.ToDate),
             IsTest = request.IsTest
         };
-        var result = await repository.FetchAsync<int>(criteria);
+        var result = await repository.FetchAsync<MatchResult>(criteria);
         return [.. result];
     }
 }

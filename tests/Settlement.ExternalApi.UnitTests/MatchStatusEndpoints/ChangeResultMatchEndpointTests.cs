@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Routing;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Settlement.External.Models;
 using Settlement.External.Requests;
 using Settlement.External.Services;
 using Settlement.ExternalApi.MatchStatusEndpoints;
@@ -23,7 +24,13 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        const string expectedResult = "1,2,3,4";
+        var expectedResult = new List<List<MatchResult>>
+        {
+            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTime.MinValue } }
+        };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -50,11 +57,11 @@ public class ChangeResultMatchEndpointTests
     }
 
     [Fact]
-    public async Task HandleAsync_WhenServiceReturnsEmptyString_ReturnsOkResult()
+    public async Task HandleAsync_WhenServiceReturnsEmptyList_ReturnsOkResult()
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        const string expectedResult = "";
+        var expectedResult = new List<List<MatchResult>>();
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -71,7 +78,10 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        const string expectedResult = "123";
+        var expectedResult = new List<List<MatchResult>>
+        {
+            new List<MatchResult> { new MatchResult { MatchId = 123, ChangeTime = DateTime.MinValue } }
+        };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -102,7 +112,12 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-08 10:00:00");
-        const string expectedResult = "1,2,3";
+        var expectedResult = new List<List<MatchResult>>
+        {
+            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue } }
+        };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -118,7 +133,12 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-01 10:00:00");
-        const string expectedResult = "5,6,7";
+        var expectedResult = new List<List<MatchResult>>
+        {
+            new List<MatchResult> { new MatchResult { MatchId = 5, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 6, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 7, ChangeTime = DateTime.MinValue } }
+        };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -150,7 +170,7 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        string? expectedResult = null;
+        List<List<MatchResult>>? expectedResult = null;
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -167,7 +187,14 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2023-01-01 10:00:00", "2024-01-01 10:00:00");
-        const string expectedResult = "100,200,300,400,500";
+        var expectedResult = new List<List<MatchResult>>
+        {
+            new List<MatchResult> { new MatchResult { MatchId = 100, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 200, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 300, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 400, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 500, ChangeTime = DateTime.MinValue } }
+        };
 
         // Clear any previous argument matchers
         matchChangeResultService.ClearReceivedCalls();
@@ -186,7 +213,11 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:30:00", "2024-01-01 11:45:00");
-        const string expectedResult = "999,1000";
+        var expectedResult = new List<List<MatchResult>>
+        {
+            new List<MatchResult> { new MatchResult { MatchId = 999, ChangeTime = DateTime.MinValue } },
+            new List<MatchResult> { new MatchResult { MatchId = 1000, ChangeTime = DateTime.MinValue } }
+        };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 

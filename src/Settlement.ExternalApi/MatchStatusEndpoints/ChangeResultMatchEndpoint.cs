@@ -13,7 +13,7 @@ public class ChangeResultMatchEndpoint(MatchChangeResultService matchChangeResul
     {
         app.MapPost("api/match/change-result",
             async (ChangeResultMatchRequest request) => await HandleAsync(request))
-            .Produces<Result>()
+            .Produces<List<List<MatchResult>>>()
             .AddEndpointFilter<LogRequestFilter>()
             .WithTags("MatchStatusEndpoints");
     }
@@ -27,7 +27,6 @@ public class ChangeResultMatchEndpoint(MatchChangeResultService matchChangeResul
             return Results.BadRequest(new Result { ErrorCode = validationResult.ErrorCode, ErrorMsg = validationResult.ErrorMsg });
         }
 
-        var result = await matchChangeResultService.GetDistinctMatchesWithChanges(request);
-        return Results.Ok(result);
+        return Results.Ok(await matchChangeResultService.GetDistinctMatchesWithChanges(request));
     }
 }

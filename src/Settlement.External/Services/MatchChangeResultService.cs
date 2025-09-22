@@ -6,21 +6,20 @@ namespace Settlement.External.Services;
 
 public interface MatchChangeResultService
 {
-    Task<string> GetDistinctMatchesWithChanges(ChangeResultMatchRequest request);
+    Task<List<List<MatchResult>>> GetDistinctMatchesWithChanges(ChangeResultMatchRequest request);
 }
 
 public class MatchChangeResultServiceImp(IMatchService matchService,
     IOptions<AppSetting> appSettingsKey) : MatchChangeResultService
 {
-    public async Task<string> GetDistinctMatchesWithChanges(ChangeResultMatchRequest request)
+    public async Task<List<List<MatchResult>>> GetDistinctMatchesWithChanges(ChangeResultMatchRequest request)
     {
         request.IsTest = appSettingsKey.Value.EnvironmentName != "PRO";
         var resultChangeMatches = await matchService.GetMatchesResultChange(request);
 
-        var distinctMatches = resultChangeMatches
-            .Distinct()
+        return resultChangeMatches
+            .GroupBy(m => m.MatchId)
+            .Select(g => g.ToList())
             .ToList();
-
-        return string.Join(",", distinctMatches);
     }
 }
