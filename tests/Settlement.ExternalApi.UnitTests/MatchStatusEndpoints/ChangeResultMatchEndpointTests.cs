@@ -26,10 +26,10 @@ public class ChangeResultMatchEndpointTests
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
         var expectedResult = new List<List<MatchResult>>
         {
-            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTime.MinValue } }
+            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -80,7 +80,7 @@ public class ChangeResultMatchEndpointTests
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
         var expectedResult = new List<List<MatchResult>>
         {
-            new List<MatchResult> { new MatchResult { MatchId = 123, ChangeTime = DateTime.MinValue } }
+            new List<MatchResult> { new MatchResult { MatchId = 123, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -114,9 +114,9 @@ public class ChangeResultMatchEndpointTests
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-08 10:00:00");
         var expectedResult = new List<List<MatchResult>>
         {
-            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue } }
+            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -135,9 +135,9 @@ public class ChangeResultMatchEndpointTests
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-01 10:00:00");
         var expectedResult = new List<List<MatchResult>>
         {
-            new List<MatchResult> { new MatchResult { MatchId = 5, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 6, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 7, ChangeTime = DateTime.MinValue } }
+            new List<MatchResult> { new MatchResult { MatchId = 5, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 6, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 7, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -189,11 +189,11 @@ public class ChangeResultMatchEndpointTests
         var request = new ChangeResultMatchRequest("2023-01-01 10:00:00", "2024-01-01 10:00:00");
         var expectedResult = new List<List<MatchResult>>
         {
-            new List<MatchResult> { new MatchResult { MatchId = 100, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 200, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 300, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 400, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 500, ChangeTime = DateTime.MinValue } }
+            new List<MatchResult> { new MatchResult { MatchId = 100, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 200, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 300, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 400, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 500, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
         };
 
         // Clear any previous argument matchers
@@ -215,8 +215,8 @@ public class ChangeResultMatchEndpointTests
         var request = new ChangeResultMatchRequest("2024-01-01 10:30:00", "2024-01-01 11:45:00");
         var expectedResult = new List<List<MatchResult>>
         {
-            new List<MatchResult> { new MatchResult { MatchId = 999, ChangeTime = DateTime.MinValue } },
-            new List<MatchResult> { new MatchResult { MatchId = 1000, ChangeTime = DateTime.MinValue } }
+            new List<MatchResult> { new MatchResult { MatchId = 999, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+            new List<MatchResult> { new MatchResult { MatchId = 1000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);

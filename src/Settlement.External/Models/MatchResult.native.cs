@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Settlement.External.Extensions;
 
 namespace Settlement.External.Models;
 
@@ -8,5 +9,6 @@ public class MatchResult
     public int MatchId { get; set; }
 
     [JsonPropertyName("ct")]
-    public DateTime ChangeTime { get; set; }
+    [JsonConverter(typeof(CustomDateTimeConverter))]
+    public DateTimeOffset ChangeTime { get; set; }
 }

@@ -27,10 +27,10 @@ public class MatchChangeResultServiceTests
 
         var resultChangeMatches = new List<MatchResult> 
         { 
-            new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 4, ChangeTime = DateTime.MinValue }
+            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -76,9 +76,9 @@ public class MatchChangeResultServiceTests
 
         var resultChangeMatches = new List<MatchResult> 
         { 
-            new MatchResult { MatchId = 4, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 5, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 6, ChangeTime = DateTime.MinValue }
+            new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 5, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 6, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -121,13 +121,13 @@ public class MatchChangeResultServiceTests
 
         var resultChangeMatches = new List<MatchResult> 
         { 
-            new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 2, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 3, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 4, ChangeTime = DateTime.MinValue }
+            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -158,7 +158,7 @@ public class MatchChangeResultServiceTests
 
         var resultChangeMatches = new List<MatchResult> 
         { 
-            new MatchResult { MatchId = 1, ChangeTime = DateTime.MinValue }
+            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -170,7 +170,7 @@ public class MatchChangeResultServiceTests
         Assert.Single(result); // 1 group
         Assert.Single(result[0]); // Group has 1 item
         Assert.Equal(1, result[0][0].MatchId);
-        Assert.Equal(DateTime.MinValue, result[0][0].ChangeTime);
+        Assert.Equal(DateTimeOffset.Parse("2025-09-19 02:50:52.390"), result[0][0].ChangeTime);
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class MatchChangeResultServiceTests
 
         var resultChangeMatches = new List<MatchResult> 
         { 
-            new MatchResult { MatchId = 1000000, ChangeTime = DateTime.MinValue }
+            new MatchResult { MatchId = 1000000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -193,7 +193,7 @@ public class MatchChangeResultServiceTests
         Assert.Single(result); // 1 group
         Assert.Single(result[0]); // Group has 1 item
         Assert.Equal(1000000, result[0][0].MatchId);
-        Assert.Equal(DateTime.MinValue, result[0][0].ChangeTime);
+        Assert.Equal(DateTimeOffset.Parse("2025-09-19 02:50:52.390"), result[0][0].ChangeTime);
     }
 
     [Fact]
@@ -204,9 +204,9 @@ public class MatchChangeResultServiceTests
 
         var resultChangeMatches = new List<MatchResult> 
         { 
-            new MatchResult { MatchId = 999999, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 1000000, ChangeTime = DateTime.MinValue },
-            new MatchResult { MatchId = 1000001, ChangeTime = DateTime.MinValue }
+            new MatchResult { MatchId = 999999, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 1000000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+            new MatchResult { MatchId = 1000001, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
