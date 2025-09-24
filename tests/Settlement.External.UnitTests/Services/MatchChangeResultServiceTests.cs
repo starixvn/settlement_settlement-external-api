@@ -25,12 +25,16 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult> 
-        { 
-            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -39,15 +43,16 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Equal(4, result.Count); // 4 groups
-        Assert.Single(result[0]); // Group 1 has 1 item
-        Assert.Single(result[1]); // Group 2 has 1 item
-        Assert.Single(result[2]); // Group 3 has 1 item
-        Assert.Single(result[3]); // Group 4 has 1 item
-        Assert.Equal(1, result[0][0].MatchId);
-        Assert.Equal(2, result[1][0].MatchId);
-        Assert.Equal(3, result[2][0].MatchId);
-        Assert.Equal(4, result[3][0].MatchId);
+        Assert.Equal(4, result.Results.Count); // 4 groups
+        Assert.Single(result.Results[0]); // Group 1 has 1 item
+        Assert.Single(result.Results[1]); // Group 2 has 1 item
+        Assert.Single(result.Results[2]); // Group 3 has 1 item
+        Assert.Single(result.Results[3]); // Group 4 has 1 item
+        Assert.Equal(1, result.Results[0][0].MatchId);
+        Assert.Equal(2, result.Results[1][0].MatchId);
+        Assert.Equal(3, result.Results[2][0].MatchId);
+        Assert.Equal(4, result.Results[3][0].MatchId);
+        Assert.Equal("Success", result.ErrorMsg);
         await matchService.Received(1).GetMatchesResultChange(request);
     }
 
@@ -57,7 +62,11 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult>();
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>(),
+            ErrorMsg = "No data found"
+        };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
@@ -65,7 +74,8 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Empty(result);
+        Assert.Empty(result.Results);
+        Assert.Equal("No data found", result.ErrorMsg);
     }
 
     [Fact]
@@ -74,11 +84,15 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult> 
-        { 
-            new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 5, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 6, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 5, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 6, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -87,13 +101,14 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Equal(3, result.Count); // 3 groups
-        Assert.Single(result[0]); // Group 1 has 1 item
-        Assert.Single(result[1]); // Group 2 has 1 item
-        Assert.Single(result[2]); // Group 3 has 1 item
-        Assert.Equal(4, result[0][0].MatchId);
-        Assert.Equal(5, result[1][0].MatchId);
-        Assert.Equal(6, result[2][0].MatchId);
+        Assert.Equal(3, result.Results.Count); // 3 groups
+        Assert.Single(result.Results[0]); // Group 1 has 1 item
+        Assert.Single(result.Results[1]); // Group 2 has 1 item
+        Assert.Single(result.Results[2]); // Group 3 has 1 item
+        Assert.Equal(4, result.Results[0][0].MatchId);
+        Assert.Equal(5, result.Results[1][0].MatchId);
+        Assert.Equal(6, result.Results[2][0].MatchId);
+        Assert.Equal("Success", result.ErrorMsg);
     }
 
     [Fact]
@@ -102,7 +117,11 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult>();
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>(),
+            ErrorMsg = "No data found"
+        };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
 
@@ -110,7 +129,8 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Empty(result);
+        Assert.Empty(result.Results);
+        Assert.Equal("No data found", result.ErrorMsg);
     }
 
     [Fact]
@@ -119,15 +139,31 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult> 
-        { 
-            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> 
+                { 
+                    new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+                    new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+                },
+                new List<MatchResult> 
+                { 
+                    new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+                    new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+                },
+                new List<MatchResult> 
+                { 
+                    new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
+                    new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+                },
+                new List<MatchResult> 
+                { 
+                    new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+                }
+            },
+            ErrorMsg = "Success"
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -136,18 +172,19 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Equal(4, result.Count); // 4 groups
-        Assert.Equal(2, result[0].Count); // Group 1 has 2 items
-        Assert.Equal(2, result[1].Count); // Group 2 has 2 items
-        Assert.Equal(2, result[2].Count); // Group 3 has 2 items
-        Assert.Single(result[3]); // Group 4 has 1 item
-        Assert.Equal(1, result[0][0].MatchId);
-        Assert.Equal(1, result[0][1].MatchId);
-        Assert.Equal(2, result[1][0].MatchId);
-        Assert.Equal(2, result[1][1].MatchId);
-        Assert.Equal(3, result[2][0].MatchId);
-        Assert.Equal(3, result[2][1].MatchId);
-        Assert.Equal(4, result[3][0].MatchId);
+        Assert.Equal(4, result.Results.Count); // 4 groups
+        Assert.Equal(2, result.Results[0].Count); // Group 1 has 2 items
+        Assert.Equal(2, result.Results[1].Count); // Group 2 has 2 items
+        Assert.Equal(2, result.Results[2].Count); // Group 3 has 2 items
+        Assert.Single(result.Results[3]); // Group 4 has 1 item
+        Assert.Equal(1, result.Results[0][0].MatchId);
+        Assert.Equal(1, result.Results[0][1].MatchId);
+        Assert.Equal(2, result.Results[1][0].MatchId);
+        Assert.Equal(2, result.Results[1][1].MatchId);
+        Assert.Equal(3, result.Results[2][0].MatchId);
+        Assert.Equal(3, result.Results[2][1].MatchId);
+        Assert.Equal(4, result.Results[3][0].MatchId);
+        Assert.Equal("Success", result.ErrorMsg);
     }
 
     [Fact]
@@ -156,9 +193,16 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult> 
-        { 
-            new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> 
+                { 
+                    new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+                }
+            },
+            ErrorMsg = "Success"
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -167,10 +211,11 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Single(result); // 1 group
-        Assert.Single(result[0]); // Group has 1 item
-        Assert.Equal(1, result[0][0].MatchId);
-        Assert.Equal(DateTimeOffset.Parse("2025-09-19 02:50:52.390"), result[0][0].ChangeTime);
+        Assert.Single(result.Results); // 1 group
+        Assert.Single(result.Results[0]); // Group has 1 item
+        Assert.Equal(1, result.Results[0][0].MatchId);
+        Assert.Equal(DateTimeOffset.Parse("2025-09-19 02:50:52.390"), result.Results[0][0].ChangeTime);
+        Assert.Equal("Success", result.ErrorMsg);
     }
 
     [Fact]
@@ -179,9 +224,16 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult> 
-        { 
-            new MatchResult { MatchId = 1000000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> 
+                { 
+                    new MatchResult { MatchId = 1000000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+                }
+            },
+            ErrorMsg = "Success"
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -190,10 +242,11 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Single(result); // 1 group
-        Assert.Single(result[0]); // Group has 1 item
-        Assert.Equal(1000000, result[0][0].MatchId);
-        Assert.Equal(DateTimeOffset.Parse("2025-09-19 02:50:52.390"), result[0][0].ChangeTime);
+        Assert.Single(result.Results); // 1 group
+        Assert.Single(result.Results[0]); // Group has 1 item
+        Assert.Equal(1000000, result.Results[0][0].MatchId);
+        Assert.Equal(DateTimeOffset.Parse("2025-09-19 02:50:52.390"), result.Results[0][0].ChangeTime);
+        Assert.Equal("Success", result.ErrorMsg);
     }
 
     [Fact]
@@ -202,11 +255,15 @@ public class MatchChangeResultServiceTests
         // Arrange
         var request = new ChangeResultMatchRequest(DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        var resultChangeMatches = new List<MatchResult> 
-        { 
-            new MatchResult { MatchId = 999999, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 1000000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") },
-            new MatchResult { MatchId = 1000001, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") }
+        var resultChangeMatches = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 999999, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 1000000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 1000001, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchService.GetMatchesResultChange(request).Returns(resultChangeMatches);
@@ -215,12 +272,13 @@ public class MatchChangeResultServiceTests
         var result = await service.GetDistinctMatchesWithChanges(request);
 
         // Assert
-        Assert.Equal(3, result.Count); // 3 groups
-        Assert.Single(result[0]); // Group 1 has 1 item
-        Assert.Single(result[1]); // Group 2 has 1 item
-        Assert.Single(result[2]); // Group 3 has 1 item
-        Assert.Equal(999999, result[0][0].MatchId);
-        Assert.Equal(1000000, result[1][0].MatchId);
-        Assert.Equal(1000001, result[2][0].MatchId);
+        Assert.Equal(3, result.Results.Count); // 3 groups
+        Assert.Single(result.Results[0]); // Group 1 has 1 item
+        Assert.Single(result.Results[1]); // Group 2 has 1 item
+        Assert.Single(result.Results[2]); // Group 3 has 1 item
+        Assert.Equal(999999, result.Results[0][0].MatchId);
+        Assert.Equal(1000000, result.Results[1][0].MatchId);
+        Assert.Equal(1000001, result.Results[2][0].MatchId);
+        Assert.Equal("Success", result.ErrorMsg);
     }
 }

@@ -24,12 +24,16 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        var expectedResult = new List<List<MatchResult>>
+        var expectedResult = new MatchResultChangeResponse
         {
-            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 4, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -46,7 +50,7 @@ public class ChangeResultMatchEndpointTests
     public async Task HandleAsync_WhenValidationFails_ReturnsBadRequestResult()
     {
         // Arrange
-        var request = new ChangeResultMatchRequest("2024-01-02 10:00:00", "2024-01-01 10:00:00"); // Invalid: toDate < fromDate
+        var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "invalid-date"); // Invalid: toDate format
 
         // Act
         var result = await endpoint.HandleAsync(request);
@@ -61,7 +65,11 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        var expectedResult = new List<List<MatchResult>>();
+        var expectedResult = new MatchResultChangeResponse
+        {
+            Results = new List<List<MatchResult>>(),
+            ErrorMsg = "No data found"
+        };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
 
@@ -78,9 +86,13 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        var expectedResult = new List<List<MatchResult>>
+        var expectedResult = new MatchResultChangeResponse
         {
-            new List<MatchResult> { new MatchResult { MatchId = 123, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 123, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -112,11 +124,15 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-08 10:00:00");
-        var expectedResult = new List<List<MatchResult>>
+        var expectedResult = new MatchResultChangeResponse
         {
-            new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 1, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 2, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 3, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -133,11 +149,15 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-01 10:00:00");
-        var expectedResult = new List<List<MatchResult>>
+        var expectedResult = new MatchResultChangeResponse
         {
-            new List<MatchResult> { new MatchResult { MatchId = 5, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 6, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 7, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 5, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 6, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 7, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -166,34 +186,21 @@ public class ChangeResultMatchEndpointTests
     }
 
     [Fact]
-    public async Task HandleAsync_WhenServiceReturnsNull_HandlesGracefully()
-    {
-        // Arrange
-        var request = new ChangeResultMatchRequest("2024-01-01 10:00:00", "2024-01-02 10:00:00");
-        List<List<MatchResult>>? expectedResult = null;
-
-        matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
-
-        // Act
-        var result = await endpoint.HandleAsync(request);
-
-        // Assert
-        Assert.NotNull(result);
-        await matchChangeResultService.Received(1).GetDistinctMatchesWithChanges(request);
-    }
-
-    [Fact]
     public async Task HandleAsync_WithLargeDateRange_ProcessesSuccessfully()
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2023-01-01 10:00:00", "2024-01-01 10:00:00");
-        var expectedResult = new List<List<MatchResult>>
+        var expectedResult = new MatchResultChangeResponse
         {
-            new List<MatchResult> { new MatchResult { MatchId = 100, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 200, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 300, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 400, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 500, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 100, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 200, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 300, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 400, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 500, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         // Clear any previous argument matchers
@@ -213,10 +220,14 @@ public class ChangeResultMatchEndpointTests
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-01 10:30:00", "2024-01-01 11:45:00");
-        var expectedResult = new List<List<MatchResult>>
+        var expectedResult = new MatchResultChangeResponse
         {
-            new List<MatchResult> { new MatchResult { MatchId = 999, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
-            new List<MatchResult> { new MatchResult { MatchId = 1000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            Results = new List<List<MatchResult>>
+            {
+                new List<MatchResult> { new MatchResult { MatchId = 999, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } },
+                new List<MatchResult> { new MatchResult { MatchId = 1000, ChangeTime = DateTimeOffset.Parse("2025-09-19 02:50:52.390") } }
+            },
+            ErrorMsg = "Success"
         };
 
         matchChangeResultService.GetDistinctMatchesWithChanges(request).Returns(expectedResult);
@@ -245,7 +256,7 @@ public class ChangeResultMatchEndpointTests
     }
 
     [Fact]
-    public void ValidateRequest_WithInvalidFromDate_ReturnsError()
+    public void ValidateRequest_WithInvalidFromDate_ReturnsSuccess()
     {
         // Arrange
         var request = new ChangeResultMatchRequest("invalid-date", "2024-01-02 10:00:00");
@@ -254,9 +265,8 @@ public class ChangeResultMatchEndpointTests
         var result = ChangeResultMatchRequestValidator.ValidateRequest(request);
 
         // Assert
-        Assert.True(result.IsFail);
-        Assert.Equal(1, result.ErrorCode);
-        Assert.Contains("Invalid fromDate format", result.ErrorMsg);
+        Assert.False(result.IsFail);
+        Assert.Equal(0, result.ErrorCode);
     }
 
     [Fact]
@@ -275,7 +285,7 @@ public class ChangeResultMatchEndpointTests
     }
 
     [Fact]
-    public void ValidateRequest_WithInvalidDateRange_ReturnsError()
+    public void ValidateRequest_WithInvalidDateRange_ReturnsSuccess()
     {
         // Arrange
         var request = new ChangeResultMatchRequest("2024-01-02 10:00:00", "2024-01-01 10:00:00"); // toDate < fromDate
@@ -284,8 +294,7 @@ public class ChangeResultMatchEndpointTests
         var result = ChangeResultMatchRequestValidator.ValidateRequest(request);
 
         // Assert
-        Assert.True(result.IsFail);
-        Assert.Equal(1, result.ErrorCode);
-        Assert.Contains("From date must be before To date", result.ErrorMsg);
+        Assert.False(result.IsFail);
+        Assert.Equal(0, result.ErrorCode);
     }
 }

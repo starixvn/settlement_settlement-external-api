@@ -12,3 +12,9 @@ public class MatchResult
     [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTimeOffset ChangeTime { get; set; }
 }
+public class MatchResultChangeResponse
+{
+    public List<List<MatchResult>> Results { get; set; } = new();
+
+    public string ErrorMsg { get; set; } = string.Empty;
+}
